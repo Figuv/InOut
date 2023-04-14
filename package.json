@@ -9,8 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-firebase/app": "^17.3.2",
+    "@react-native-firebase/firestore": "^17.3.2",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
+    "bcryptjs": "^2.4.3",
     "expo": "~48.0.6",
     "expo-status-bar": "~1.4.4",
     "firebase": "^9.17.2",
