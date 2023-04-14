@@ -1,6 +1,9 @@
 {
   "name": "inout",
   "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
