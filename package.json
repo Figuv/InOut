@@ -1,6 +1,9 @@
 {
   "name": "inout",
   "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -9,19 +12,27 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/webpack-config": "^18.0.1",
     "@react-native-firebase/app": "^17.3.2",
     "@react-native-firebase/firestore": "^17.3.2",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "bcryptjs": "^2.4.3",
+    "crypto-js": "^4.1.1",
     "expo": "~48.0.6",
     "expo-status-bar": "~1.4.4",
     "firebase": "^9.17.2",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
+    "react-datepicker": "^4.11.0",
     "react-dom": "^18.2.0",
-    "react-native": "0.71.3",
-    "react-native-web": "~0.18.11"
+    "react-native": "0.71.6",
+    "react-native-datepicker": "^1.7.2",
+    "react-native-dropdown-picker": "^5.4.6",
+    "react-native-paper-dates": "^0.15.1",
+    "react-native-picker-select": "^8.0.4",
+    "react-native-web": "~0.18.11",
+    "tailwind-react-native-classnames": "^1.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
