@@ -7,17 +7,18 @@ import {
   StatusBar,
 } from "react-native";
 import React, { useState } from "react";
-import { collection, addDoc} from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import db from "../database/firebase";
-import bycript from "bcryptjs";
+import { SHA256 } from "crypto-js";
 
-const AddUser = () => {
+const AddUser = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
   const hashPassword = (password) => {
-    return bycript.hashSync(password, 10);
+    const hash = SHA256(password).toString();
+    return hash;
   };
 
   const handleCreateAccount = async () => {
@@ -31,6 +32,7 @@ const AddUser = () => {
           name: name,
           email: email,
           password: hashPassword(password),
+          teamId: "",
         });
         props.navigation.navigate("Home");
       } catch (error) {
@@ -61,9 +63,10 @@ const AddUser = () => {
           ></TextInput>
           {/* Login Button */}
           <View>
-            <TouchableOpacity className="bg-[#fff] rounded-2xl w-80 h-12 justify-center items-center"
+            <TouchableOpacity
+              className="bg-[#fff] rounded-2xl w-80 h-12 justify-center items-center"
               onPress={handleCreateAccount}
-              >
+            >
               <Text className="text-[#6F47EB] font-bold text-2xl">Add</Text>
             </TouchableOpacity>
           </View>

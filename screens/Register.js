@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { collection, addDoc, setDoc, doc, getDoc } from "firebase/firestore";
 import db from "../database/firebase";
 import bycript from "bcryptjs";
-import { AES } from "crypto-js";
+import { SHA256 } from "crypto-js";
 
 const Register = (props) => {
   const [email, setEmail] = useState("");
@@ -18,33 +18,27 @@ const Register = (props) => {
   const [name, setName] = useState("");
 
   const hashPassword = (password) => {
-    return bycript.hashSync(password, 10);
+    const hash = SHA256(password).toString();
+    return hash;
   };
 
   const handleCreateAccount = async () => {
-    const claveSecreta = "Clave secreta";
-
-    // Encriptar el texto utilizando AES
-    const textoEncriptado = AES.encrypt(password, claveSecreta).toString();
-
-    console.log("Texto encriptado:", textoEncriptado);
-
-    // console.log("Creating account...");
-
-    // if (email.length === 0) {
-    //   alert("Please enter an email");
-    // } else {
-    //   try {
-    //     await addDoc(collection(db, "users"), {
-    //       name: name,
-    //       email: email,
-    //       password: hashPassword(password),
-    //     });
-    //     props.navigation.navigate("Home");
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
+    console.log("Creating account...");
+    if (email.length === 0) {
+      alert("Please enter an email");
+    } else {
+      try {
+        await addDoc(collection(db, "users"), {
+          name: name,
+          email: email,
+          password: hashPassword(password),
+          teamId: ""
+        });
+        props.navigation.navigate("Login");
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   return (

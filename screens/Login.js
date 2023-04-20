@@ -18,12 +18,12 @@ import {
   getDocs,
 } from "firebase/firestore";
 import db from "../database/firebase";
-import bycript from "bcryptjs";
+import { SHA256 } from "crypto-js";
 import { AppContext } from "../AppContext";
 
 const Login = (props) => {
   const { storeGlobalData } = useContext(AppContext);
-  
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -34,8 +34,14 @@ const Login = (props) => {
       const q = query(collection(db, "users"), where("email", "==", email));
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        if (bycript.compareSync(password, doc.data().password)) {
-          storeGlobalData({ user:doc.data() });
+        // if (bycript.compareSync(password, doc.data().password)) {
+        //   storeGlobalData({ user:doc.data() });
+        //   props.navigation.navigate("Home");
+        // } else {
+        //   alert("Incorrect password");
+        // }
+        if (hashPassword(password) === doc.data().password) {
+          storeGlobalData({ user: doc.data() });
           props.navigation.navigate("Home");
         } else {
           alert("Incorrect password");
@@ -43,7 +49,10 @@ const Login = (props) => {
       });
     }
   };
-  
+  const hashPassword = (password) => {
+    const hash = SHA256(password).toString();
+    return hash;
+  };
 
   return (
     <KeyboardAvoidingView
