@@ -199,37 +199,3 @@ const AddTask = (props) => {
 };
 
 export default AddTask;
-
-//Time picker
-//  const [visible, setVisible] = React.useState(false);
-//  const onDismiss = React.useCallback(() => {
-//    setVisible(false);
-//  }, [setVisible]);
-
-//  const onConfirm = React.useCallback(
-//    ({ hours, minutes }) => {
-//      setVisible(false);
-//      console.log({ hours, minutes });
-//    },
-//    [setVisible]
-//  );
-
-// {/* Time picker */}
-// <View>
-// <TouchableOpacity
-//   onPress={() => setVisible(true)}
-//   uppercase={false}
-//   mode="outlined"
-// >
-//   <Text className="text-white font-bold text-lg">
-//     Start Time: {startDate?.toTimeString()}
-//   </Text>
-// </TouchableOpacity>
-// <TimePickerModal
-//   visible={visible}
-//   onDismiss={onDismiss}
-//   onConfirm={onConfirm}
-//   animationType="fade"
-//   locale="en"
-// />
-// </View>

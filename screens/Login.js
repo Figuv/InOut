@@ -34,14 +34,11 @@ const Login = (props) => {
       const q = query(collection(db, "users"), where("email", "==", email));
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        // if (bycript.compareSync(password, doc.data().password)) {
-        //   storeGlobalData({ user:doc.data() });
-        //   props.navigation.navigate("Home");
-        // } else {
-        //   alert("Incorrect password");
-        // }
         if (hashPassword(password) === doc.data().password) {
-          storeGlobalData({ user: doc.data() });
+          const userData = doc.data();
+          userData.id = doc.id;
+          storeGlobalData({ user: userData });
+          checkSession(userData);
           props.navigation.navigate("Home");
         } else {
           alert("Incorrect password");
@@ -49,6 +46,28 @@ const Login = (props) => {
       });
     }
   };
+
+  const checkSession = async (user) => {
+    const q = query(
+      collection(db, "session"),
+      where("userId", "==", user.id),
+      where("logDate", "==", new Date().toDateString())
+    );
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      const session = {
+        userId: user.id,
+        logDate: new Date().toDateString(),
+        loginTime: new Date().toLocaleTimeString(),
+        logoutTime: "",
+        hours:"",
+      };
+      const docRef = await addDoc(collection(db, "session"), session);
+    } else {
+      console.log("Session already exists");
+    }
+  };
+
   const hashPassword = (password) => {
     const hash = SHA256(password).toString();
     return hash;
