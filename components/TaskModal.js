@@ -27,8 +27,8 @@ const Tasks = (props) => {
   const { id } = taskData;
   console.log("taskData", taskData.endDate.toDate());
 
+  // Calcula el tiempo restante que tiene el usuario para completar la tarea
   useEffect(() => {
-    // Calcula el tiempo restante al montar el componente
     const now = new Date();
     const endDate = new Date(taskData.endDate.toDate());
     const timeDifference = endDate - now;
@@ -44,6 +44,7 @@ const Tasks = (props) => {
     );
   }, []);
 
+  // Actualiza el estado de la tarea marcandola como completada
   const updateTaskStatus = async () => {
     try {
       const docRef = doc(db, "tasks", id);
@@ -55,6 +56,11 @@ const Tasks = (props) => {
     } catch (error) {
       console.error("Error updating task status: ", error);
     }
+  };
+
+  //Open tho modal EditTask
+  const editTask = () => {
+    props.navigation.navigate("ModalEditTask", { taskData });
   };
 
   return (
@@ -80,10 +86,15 @@ const Tasks = (props) => {
       >
         <Text className="text-black font-bold">Finish Task</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => editTask()}
+        className="bg-white py-2 px-4 mt-4 mx-4 rounded-md"
+      >
+        <Text className="text-black font-bold">Edit Task</Text>
+      </TouchableOpacity>
+
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <View className="flex-1 justify-center items-center h-full w-full">
           <View className="bg-white rounded-xl p-5">
             <TextInput
               className="border-2 border-black rounded-md p-2"
