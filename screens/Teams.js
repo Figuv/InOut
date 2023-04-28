@@ -8,6 +8,7 @@ const Teams = (props) => {
 
   const [teams, setTeams] = useState([]);
 
+  // Get teams
   useEffect(() => {
     const q = query(collection(db, "teams"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {

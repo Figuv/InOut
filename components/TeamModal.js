@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 import db from "../database/firebase";
 import DropDownPicker from "react-native-dropdown-picker";
+import UserCard from "./UserCard";
 
 const TeamModal = (props) => {
   const { teamData } = props.route.params;
@@ -84,6 +85,29 @@ const TeamModal = (props) => {
         console.error("Error deleting team: ", error);
       });
   };
+  //Edit team
+  const editTeam = () => {
+    props.navigation.navigate("ModalEditTeam", { teamData });
+  };
+
+  //Show user modal
+  const showUserModal = (userData) => {
+    props.navigation.navigate("ModalUser", { userData });
+  };
+
+  //Remove user from team
+  const removeFromTeam = (userData) => {
+    const userRef = doc(db, "users", userData.id);
+    updateDoc(userRef, {
+      teamId: "",
+    })
+      .then(() => {
+        console.log("User removed from team successfully");
+      })
+      .catch((error) => {
+        console.error("Error removing user from team: ", error);
+      });
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#6F47EB] w-full h-full justify-center items-center">
@@ -96,12 +120,13 @@ const TeamModal = (props) => {
         </View>
         <ScrollView className="flex-1">
           {users.map((member, index) => (
-            <View key={index} className="p-5">
-              <Text className="text-xl font-bold text-white">
-                {member.name}
-              </Text>
-              <Text className="text-lg text-white">{member.email}</Text>
-            </View>
+            <UserCard
+              key={index}
+              onPress={() => showUserModal(member)}
+              screen="TeamModal"
+              userData={member}
+              removeUser={() => removeFromTeam(member)}
+            />
           ))}
         </ScrollView>
         <View className="mx-4">
@@ -142,6 +167,14 @@ const TeamModal = (props) => {
             <Text className="text-[#6F47EB] text-lg font-bold">
               Add Members
             </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              editTeam();
+            }}
+            className="bg-gray-500 flex-grow rounded-2xl w-auto h-12 justify-center items-center shadow-lg"
+          >
+            <Text className="text-white text-lg font-bold">Edit Team</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => deleteTeam()}
