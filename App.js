@@ -14,6 +14,10 @@ import Teams from "./screens/Teams";
 import ModalTeam from "./components/TeamModal";
 import TeamCard from "./components/TeamCard";
 import Users from "./screens/Users";
+import EditTeamModal from "./components/EditTeamModal";
+import UserModal from "./components/UserModal";
+import EditUserModal from "./components/EditUserModal";
+import EditTaskModal from "./components/EditTaskModal";
 
 NativeWindStyleSheet.setOutput({
   default: "native",
@@ -84,6 +88,26 @@ function MyStack() {
           options={{ headerShown: false }}
           name="ModalTask"
           component={ModalTask}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ModalEditTask"
+          component={EditTaskModal}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ModalEditTeam"
+          component={EditTeamModal}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ModalUser"
+          component={UserModal}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ModalEditUser"
+          component={EditUserModal}
         />
       </Stack.Group>
     </Stack.Navigator>
