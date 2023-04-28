@@ -16,11 +16,13 @@ const AddUser = (props) => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
+  // Hash password
   const hashPassword = (password) => {
     const hash = SHA256(password).toString();
     return hash;
   };
 
+  // Create team function
   const handleCreateAccount = async () => {
     console.log("Creating account...");
 

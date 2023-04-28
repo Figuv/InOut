@@ -27,7 +27,9 @@ const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleCreateAccount = async () => {
+
+  // Login function
+  const login = async () => {
     if (email.length === 0 && password.length === 0) {
       alert("Please enter an email and password");
     } else {
@@ -40,6 +42,7 @@ const Login = (props) => {
           storeGlobalData({ user: userData });
           checkSession(userData);
           props.navigation.navigate("Home");
+        
         } else {
           alert("Incorrect password");
         }
@@ -47,6 +50,7 @@ const Login = (props) => {
     }
   };
 
+  // Check if session exists
   const checkSession = async (user) => {
     const q = query(
       collection(db, "session"),
@@ -68,6 +72,7 @@ const Login = (props) => {
     }
   };
 
+  // Hash password
   const hashPassword = (password) => {
     const hash = SHA256(password).toString();
     return hash;
@@ -101,7 +106,7 @@ const Login = (props) => {
             <View>
               <TouchableOpacity
                 className="bg-[#fff] rounded-2xl w-80 h-12 justify-center items-center"
-                onPress={handleCreateAccount}
+                onPress={login}
               >
                 <Text className="text-[#6F47EB] font-bold text-2xl">Login</Text>
               </TouchableOpacity>

@@ -16,6 +16,7 @@ const Home = (props) => {
   const { globalData } = useContext(AppContext);
   const { user } = globalData;
 
+  // Log out function
   const logOut = async () => {
     const q = query(collection(db, "session"), where("userId", "==", user.id));
     const querySnapshot = await getDocs(q);
@@ -25,6 +26,8 @@ const Home = (props) => {
       await updateSession(session);
     });
   };
+
+  //Set the logout time and calculate the time difference
   const updateSession = async (session) => {
     const date =
       new Date().getFullYear() +
@@ -34,13 +37,11 @@ const Home = (props) => {
       new Date().getDate();
     const date1 = new Date(`${date} ${session.loginTime}`);
     const date2 = new Date(`${date} ${new Date().toLocaleTimeString()}`);
-    console.log(date1);
-    console.log(date2);
     const timeDifference = date2 - date1;
     const hours = Math.floor(timeDifference / 3600000);
     const minutes = Math.floor((timeDifference % 3600000) / 60000);
     const seconds = Math.floor(((timeDifference % 360000) % 60000) / 1000);
-    console.log(timeDifference);
+    // console.log(timeDifference);
     await updateDoc(doc(db, "session", session.id), {
       logoutTime: new Date().toLocaleTimeString(),
       hours: hours + ":" + minutes + ":" + seconds,

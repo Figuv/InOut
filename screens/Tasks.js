@@ -19,6 +19,7 @@ const Tasks = (props) => {
   const [tasks, setTasks] = useState([]);
   const {teamId} = user;
 
+  // Get tasks
   useEffect(() => {
     const q = query(collection(db, "tasks"), where("teamId", "==", teamId.trim()), where("state", "==", 1));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {

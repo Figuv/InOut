@@ -9,7 +9,6 @@ import {
 import React, { useState } from "react";
 import { collection, addDoc, setDoc, doc, getDoc } from "firebase/firestore";
 import db from "../database/firebase";
-import bycript from "bcryptjs";
 import { SHA256 } from "crypto-js";
 
 const Register = (props) => {
@@ -17,11 +16,13 @@ const Register = (props) => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
+  // Hash password
   const hashPassword = (password) => {
     const hash = SHA256(password).toString();
     return hash;
   };
 
+  // Create account function
   const handleCreateAccount = async () => {
     console.log("Creating account...");
     if (email.length === 0) {

@@ -77,6 +77,7 @@ const AddTask = (props) => {
     return () => unsubscribe();
   }, []);
 
+  //Add task
   const addTask = async () => {
     try {
       await addDoc(collection(db, "tasks"), {

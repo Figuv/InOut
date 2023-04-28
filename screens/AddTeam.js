@@ -13,6 +13,7 @@ import db from "../database/firebase";
 const AddTeam = (props) => {
   const [teamName, setTeamName] = useState("");
 
+  // Create team function
   const handleCreateTeam = async () => {
     if (teamName.length === 0) {
       alert("Please enter a team name");
