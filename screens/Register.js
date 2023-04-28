@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { collection, addDoc, setDoc, doc, getDoc } from "firebase/firestore";
 import db from "../database/firebase";
 import bycript from "bcryptjs";
+import { SHA256 } from "crypto-js";
 
 const Register = (props) => {
   const [email, setEmail] = useState("");
@@ -17,12 +18,12 @@ const Register = (props) => {
   const [name, setName] = useState("");
 
   const hashPassword = (password) => {
-    return bycript.hashSync(password, 10);
+    const hash = SHA256(password).toString();
+    return hash;
   };
 
   const handleCreateAccount = async () => {
     console.log("Creating account...");
-  
     if (email.length === 0) {
       alert("Please enter an email");
     } else {
@@ -31,8 +32,9 @@ const Register = (props) => {
           name: name,
           email: email,
           password: hashPassword(password),
+          teamId: ""
         });
-        props.navigation.navigate("Home");
+        props.navigation.navigate("Login");
       } catch (error) {
         console.log(error);
       }
@@ -40,57 +42,59 @@ const Register = (props) => {
   };
 
   return (
-    <View className="bg-[#6F47EB] h-full">
-      <KeyboardAvoidingView>
-        <SafeAreaView>
-          <View className="flex-col h-screen items-center justify-center">
-            {/* Header */}
-            <View className="my-10">
-              <Text className="text-white font-black text-4xl">Register</Text>
+    <KeyboardAvoidingView
+      className="bg-[#6F47EB] h-full w-full items-center justify-center"
+      behavior="padding"
+    >
+      <SafeAreaView>
+        <View className="flex-col h-screen items-center justify-center">
+          {/* Header */}
+          <View className="my-4">
+            <Text className="text-white font-black text-4xl">Register</Text>
+          </View>
+          {/* Inputs */}
+          <View className="space-y-4 items-center">
+            <TextInput
+              className="bg-white rounded-2xl w-80 lg:w-96 h-12 px-4 font-bold"
+              placeholder="Email"
+              onChangeText={(text) => setEmail(text)}
+            ></TextInput>
+            <TextInput
+              className="bg-white rounded-2xl w-80 h-12 px-4 font-bold"
+              placeholder="Password"
+              onChangeText={(text) => setPassword(text)}
+              secureTextEntry={true}
+            ></TextInput>
+            <TextInput
+              className="bg-white rounded-2xl w-80 h-12 px-4 font-bold"
+              placeholder="Name"
+              onChangeText={(text) => setName(text)}
+            ></TextInput>
+
+            {/* Register Button */}
+            <View>
+              <TouchableOpacity
+                className="bg-[#fff] rounded-2xl w-80 h-12 justify-center items-center"
+                onPress={handleCreateAccount}
+              >
+                <Text className="text-[#6F47EB] font-bold text-2xl">
+                  Register
+                </Text>
+              </TouchableOpacity>
             </View>
-            {/* Inputs */}
-            <View className="space-y-4 mb-60 items-center">
-              <TextInput
-                className="bg-white rounded-2xl w-80 lg:w-96 h-12 px-4 font-bold"
-                placeholder="Email"
-                onChangeText={(text) => setEmail(text)}
-              ></TextInput>
-              <TextInput
-                className="bg-white rounded-2xl w-80 h-12 px-4 font-bold"
-                placeholder="Password"
-                onChangeText={(text) => setPassword(text)}
-                secureTextEntry={true}
-              ></TextInput>
-              <TextInput
-                className="bg-white rounded-2xl w-80 h-12 px-4 font-bold"
-                placeholder="Name"
-                onChangeText={(text) => setName(text)}
-              ></TextInput>
-              {/* Register Button */}
-              <View>
-                <TouchableOpacity
-                  className="bg-[#fff] rounded-2xl w-80 h-12 justify-center items-center"
-                  onPress={handleCreateAccount}
-                >
-                  <Text className="text-[#6F47EB] font-bold text-2xl">
-                    Register
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View className="flex-row items-center">
-                <TouchableOpacity
-                  onPress={() => props.navigation.navigate("Login")}
-                >
-                  <Text className="text-white font-bold text-lg">
-                    Already have an account?
-                  </Text>
-                </TouchableOpacity>
-              </View>
+            <View className="flex-row items-center">
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate("Login")}
+              >
+                <Text className="text-white font-bold text-lg">
+                  Already have an account?
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
-    </View>
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
