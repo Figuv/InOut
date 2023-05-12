@@ -44,7 +44,7 @@ const AddUser = (props) => {
   };
 
   return (
-    <View className="h-full w-full">
+    <View className="h-full w-full bg-[#6F47EB]">
       <SafeAreaView>
         <View className="space-y-4 mb-60 items-center">
           <TextInput

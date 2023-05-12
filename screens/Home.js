@@ -55,7 +55,7 @@ const Home = (props) => {
         <View className="flex-col h-screen items-center justify-center space-y-2">
           <TouchableOpacity
             className="bg-[#fff] rounded-2xl w-80 h-12 justify-center items-center shadow-lg"
-            onPress={() => props.navigation.navigate("Tasks", { user: user })}
+            onPress={() => props.navigation.navigate("Tasks")}
           >
             <Text className="text-[#6F47EB] font-bold text-2xl">Tasks</Text>
           </TouchableOpacity>

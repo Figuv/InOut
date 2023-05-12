@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, SafeAreaView, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import db from "../database/firebase";
 import UserCard from "../components/UserCard";
+import { FontAwesome } from "@expo/vector-icons";
 
 const Users = (props) => {
   const [users, setUsers] = useState([]);
@@ -43,6 +50,19 @@ const Users = (props) => {
               />
             ))}
           </ScrollView>
+          <View className="flex-row">
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("AddUser")}
+              className="bg-white py-2 px-4 rounded-lg"
+            >
+              <FontAwesome
+                name="user-plus"
+                size={24}
+                color="black"
+                className="text-black"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </View>

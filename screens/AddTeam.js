@@ -30,7 +30,7 @@ const AddTeam = (props) => {
   };
   return (
     <KeyboardAvoidingView
-      className="bg-[#fff] h-full w-full items-center justify-center"
+      className="bg-[#6F47EB] h-full w-full items-center justify-center"
       behavior="padding"
     >
       <SafeAreaView>
