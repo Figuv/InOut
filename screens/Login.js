@@ -27,26 +27,79 @@ const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
   // Login function
+  // const login = async () => {
+  //   if (email.length === 0 && password.length === 0) {
+  //     alert("Please enter an email and password");
+  //   } else {
+  //     const p = query(collection(db, "admins"), where("email", "==", email));
+  //     const q = query(collection(db, "users"), where("email", "==", email));
+  //     const pQuerySnapshot = await getDocs(p);
+  //     const querySnapshot = await getDocs(q);
+  //     querySnapshot.forEach((doc) => {
+  //       if (hashPassword(password) === doc.data().password) {
+  //         const userData = doc.data();
+  //         userData.id = doc.id;
+  //         storeGlobalData({ user: userData });
+  //         checkSession(userData);
+  //         props.navigation.navigate("Home");
+
+  //       } else {
+  //         alert("Incorrect password");
+  //       }
+  //     });
+  //   }
+  // };
   const login = async () => {
     if (email.length === 0 && password.length === 0) {
       alert("Please enter an email and password");
     } else {
-      const q = query(collection(db, "users"), where("email", "==", email));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        if (hashPassword(password) === doc.data().password) {
-          const userData = doc.data();
-          userData.id = doc.id;
-          storeGlobalData({ user: userData });
-          checkSession(userData);
-          props.navigation.navigate("Home");
-        
-        } else {
+      const adminsQuery = query(
+        collection(db, "admins"),
+        where("email", "==", email)
+      );
+      const usersQuery = query(
+        collection(db, "users"),
+        where("email", "==", email)
+      );
+      const adminsQuerySnapshot = await getDocs(adminsQuery);
+      const usersQuerySnapshot = await getDocs(usersQuery);
+
+      if (adminsQuerySnapshot.empty && usersQuerySnapshot.empty) {
+        alert("Email not found");
+        return;
+      }
+
+      let userData;
+      if (!adminsQuerySnapshot.empty) {
+        const user = adminsQuerySnapshot.docs[0];
+        if (hashPassword(password) !== user.data().password) {
           alert("Incorrect password");
+          return;
         }
-      });
+        userData = user.data();
+        userData.id = user.id;
+        userData.role = "admin";
+      } else {
+        const user = usersQuerySnapshot.docs[0];
+        if (hashPassword(password) !== user.data().password) {
+          alert("Incorrect password");
+          return;
+        }
+        userData = user.data();
+        userData.id = user.id;
+        userData.role = "user";
+        checkSession(userData);
+      }
+      storeGlobalData({ user: userData });
+      
+      if (userData.role === "admin") {
+        props.navigation.navigate("Teams");
+        return;
+      } else if (userData.role === "user") {
+        props.navigation.navigate("Tasks");
+        return;
+      }
     }
   };
 
@@ -64,7 +117,7 @@ const Login = (props) => {
         logDate: new Date().toDateString(),
         loginTime: new Date().toLocaleTimeString(),
         logoutTime: "",
-        hours:"",
+        hours: "",
       };
       const docRef = await addDoc(collection(db, "session"), session);
     } else {

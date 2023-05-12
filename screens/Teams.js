@@ -1,16 +1,33 @@
-import { View, Text, SafeAreaView, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import TeamCard from "../components/TeamCard";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import db from "../database/firebase";
+import { AppContext } from "../AppContext";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Users from "./Users";
+import { FontAwesome } from "@expo/vector-icons";
+import AddUser from "./AddUser";
+
+const Tab = createBottomTabNavigator();
 
 const Teams = (props) => {
+  const { globalData } = useContext(AppContext);
+  const { user } = globalData;
+  const { id } = user;
 
   const [teams, setTeams] = useState([]);
 
   // Get teams
   useEffect(() => {
-    const q = query(collection(db, "teams"));
+    // const q = query(collection(db, "teams"));
+    const q = query(collection(db, "teams"), where("adminId", "==", id.trim()));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const teamsData = [];
       querySnapshot.forEach((doc) => {
@@ -31,13 +48,15 @@ const Teams = (props) => {
   return (
     <View className="bg-[#6F47EB] h-full w-full items-center justify-center">
       <SafeAreaView>
-        <View className="flex-col items-center justify-center">
-          <View className="">
+        <View className="flex-col items-center justify-center relative">
+          <View className="mb-10">
             <Text className="text-white font-black text-4xl">Teams</Text>
           </View>
-          <ScrollView className="flex-1 w-full h-full"
-              showsVerticalScrollIndicator={false}
-            >
+
+          <ScrollView
+            className="flex-1 w-full h-full"
+            showsVerticalScrollIndicator={false}
+          >
             {teams.map((team, index) => {
               return (
                 <TeamCard
@@ -48,6 +67,30 @@ const Teams = (props) => {
               );
             })}
           </ScrollView>
+          <View className="flex-row">
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("Users")}
+              className="bg-white py-2 px-4 rounded-lg"
+            >
+              <FontAwesome
+                name="users"
+                size={24}
+                color="black"
+                className="text-black"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("AddTeam")}
+              className="bg-white py-2 px-4 rounded-lg"
+            >
+              <FontAwesome
+                name="plus"
+                size={24}
+                color="black"
+                className="text-black"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </View>
