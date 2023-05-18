@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import TeamCard from "../components/TeamCard";
+import TeamCard from "../../components/Teachers/TeamCard";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import db from "../database/firebase";
-import { AppContext } from "../AppContext";
+import db from "../../database/firebase";
+import { AppContext } from "../../AppContext";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Users from "./Users";
 import { FontAwesome } from "@expo/vector-icons";
@@ -85,6 +85,17 @@ const Teams = (props) => {
             >
               <FontAwesome
                 name="plus"
+                size={24}
+                color="black"
+                className="text-black"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("AddTask")}
+              className="bg-white py-2 px-4 rounded-lg"
+            >
+              <FontAwesome
+                name="tasks"
                 size={24}
                 color="black"
                 className="text-black"

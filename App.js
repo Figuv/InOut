@@ -5,19 +5,21 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NativeWindStyleSheet } from "nativewind";
 import { AppProvider } from "./AppContext";
 import Login from "./screens/Login";
-import AddUser from "./screens/AddUser";
+import AddUser from "./screens/Teachers/AddUser";
 import Tasks from "./screens/Tasks";
-import AddTask from "./screens/AddTask";
+import AddTask from "./screens/Teachers/AddTask";
 import ModalTask from "./components/TaskModal";
-import AddTeam from "./screens/AddTeam";
-import Teams from "./screens/Teams";
-import ModalTeam from "./components/TeamModal";
-import TeamCard from "./components/TeamCard";
-import Users from "./screens/Users";
-import EditTeamModal from "./components/EditTeamModal";
-import UserModal from "./components/UserModal";
-import EditUserModal from "./components/EditUserModal";
-import EditTaskModal from "./components/EditTaskModal";
+import AddTeam from "./screens/Teachers/AddTeam";
+import Teams from "./screens/Teachers/Teams";
+import ModalTeam from "./components/Teachers/TeamModal";
+import TeamCard from "./components/Teachers/TeamCard";
+import Users from "./screens/Teachers/Users";
+import EditTeamModal from "./components/Teachers/EditTeamModal";
+import UserModal from "./components/Teachers/UserModal";
+import EditUserModal from "./components/Teachers/EditUserModal";
+import EditTaskModal from "./components/Teachers/EditTaskModal";
+import TeamModalUsers from "./components/Teachers/TeamModalUsers";
+import TaskModalUsers from "./components/Teachers/TaskModalUsers";
 
 NativeWindStyleSheet.setOutput({
   default: "native",
@@ -108,6 +110,16 @@ function MyStack() {
           options={{ headerShown: false }}
           name="ModalEditUser"
           component={EditUserModal}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ModalTeamUsers"
+          component={TeamModalUsers}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ModalTaskUsers"
+          component={TaskModalUsers}
         />
       </Stack.Group>
     </Stack.Navigator>

@@ -16,7 +16,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import db from "../database/firebase";
+import db from "../../database/firebase";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import DropDownPicker from "react-native-dropdown-picker";
 

@@ -28,15 +28,6 @@ import {
 import db from "../database/firebase";
 import storage from "../database/storage";
 
-const fileIcons = {
-  pdf: require("../images/icons8-cloud-file-64.png"),
-  doc: require("../images/icons8-cloud-file-64.png"),
-  mp4: require("../images/icons8-cloud-file-64.png"),
-  mp3: require("../images/icons8-cloud-file-64.png"),
-  zip: require("../images/icons8-cloud-file-64.png"),
-};
-
-
 const TaskModal = (props) => {
   const { taskData } = props.route.params; // obtén los datos del equipo desde las props
   const [modalVisible, setModalVisible] = useState(false);

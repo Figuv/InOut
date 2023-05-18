@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import db from "../database/firebase";
-import UserCard from "../components/UserCard";
+import db from "../../database/firebase";
+import UserCard from "../../components/UserCard";
 import { FontAwesome } from "@expo/vector-icons";
 
 const Users = (props) => {

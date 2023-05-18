@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import db from "../database/firebase";
+import db from "../../database/firebase";
 import { SHA256 } from "crypto-js";
 
 const AddUser = (props) => {

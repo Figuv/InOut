@@ -15,11 +15,10 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import db from "../database/firebase";
+import db from "../../database/firebase";
 import DropDownPicker from "react-native-dropdown-picker";
-import UserCard from "./UserCard";
-
-const TeamModal = (props) => {
+import UserCard from "../UserCard";
+const TeamModalUsers = () => {
   const { teamData } = props.route.params;
   const [users, setUsers] = useState([]);
   const { id } = teamData;
@@ -72,24 +71,7 @@ const TeamModal = (props) => {
         console.error("Error adding user to team: ", error);
       });
   };
-
-  //Delete team
-  const deleteTeam = () => {
-    const teamRef = collection(db, "teams");
-    deleteDoc(doc(teamRef, teamData.id))
-      .then(() => {
-        console.log("Team deleted successfully");
-        props.navigation.goBack();
-      })
-      .catch((error) => {
-        console.error("Error deleting team: ", error);
-      });
-  };
-  //Edit team
-  const editTeam = () => {
-    props.navigation.navigate("ModalEditTeam", { teamData });
-  };
-
+  
   //Show user modal
   const showUserModal = (userData) => {
     props.navigation.navigate("ModalUser", { userData });
@@ -167,25 +149,11 @@ const TeamModal = (props) => {
             <Text className="text-[#6F47EB] text-lg font-bold">
               Add Members
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              editTeam();
-            }}
-            className="bg-gray-500 flex-grow rounded-2xl w-auto h-12 justify-center items-center shadow-lg"
-          >
-            <Text className="text-white text-lg font-bold">Edit Team</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => deleteTeam()}
-            className="bg-[#EC2008] flex-grow rounded-2xl w-auto h-12 justify-center items-center shadow-lg"
-          >
-            <Text className="text-white text-lg font-bold">Delete Team</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>          
         </View>
       </View>
     </SafeAreaView>
   );
 };
 
-export default TeamModal;
+export default TeamModalUsers;

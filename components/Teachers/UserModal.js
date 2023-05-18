@@ -15,7 +15,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import db from "../database/firebase";
+import db from "../../database/firebase";
 
 const UserModal = (props) => {
   const { userData } = props.route.params;

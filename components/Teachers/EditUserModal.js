@@ -16,20 +16,22 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import db from "../database/firebase";
+import db from "../../database/firebase";
 
-const EditTeamModal = (props) => {
-  const { teamData } = props.route.params;
-  const { id } = teamData;
-  const [teamName, setTeamName] = useState("");
+const EditUserModal = (props) => {
+  const { userData } = props.route.params;
+  const { id } = userData;
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   //do the logic to the function editTeam
-  const editTeam = async () => {
-    const teamRef = doc(db, "teams", id);
-    await updateDoc(teamRef, {
-      teamName: teamName,
+  const editUser = async () => {
+    const userRef = doc(db, "users", id);
+    await updateDoc(userRef, {
+      name: userName,
+      email: userEmail,
     });
-    props.navigation.navigate("Teams");
+    props.navigation.navigate("Users");
   };
 
   return (
@@ -37,18 +39,27 @@ const EditTeamModal = (props) => {
       <View className="items-center justify-between px-4 space-y-3">
         <View className="items-center py-5">
           <Text className="text-white text-3xl font-bold">
-            Edit Team {teamData.teamName}
+            Edit User {userData.name}
           </Text>
         </View>
         <View className="flex-1 items-center">
           {/* Renderizar los campos editables */}
-          <Text className="text-white text-xl font-bold">Edit team Name</Text>
           <View className="items-center px-4">
+            <Text className="text-white text-lg font-bold">Edit User Name</Text>
             <TextInput
               className="bg-white rounded-2xl w-80 h-12 px-4 font-bold mb-2"
-              placeholder="Team Name"
-              value={teamName}
-              onChangeText={(text) => setTeamName(text)}
+              placeholder="User Name"
+              value={userName}
+              onChangeText={(text) => setUserName(text)}
+            />
+          </View>
+          <View className="items-center px-4">
+            <Text className="text-white text-lg font-bold">Edit User Email</Text>
+            <TextInput
+              className="bg-white rounded-2xl w-80 h-12 px-4 font-bold mb-2"
+              placeholder="User Email"
+              value={userEmail}
+              onChangeText={(text) => setUserEmail(text)}
             />
           </View>
         </View>
@@ -56,7 +67,7 @@ const EditTeamModal = (props) => {
         <View className="flex-row items-center justify-between px-4 space-x-1">
           <TouchableOpacity
             onPress={() => {
-              editTeam();
+              editUser();
             }}
             className="bg-gray-500 flex-grow rounded-2xl w-auto h-12 justify-center items-center shadow-lg"
           >
@@ -75,4 +86,5 @@ const EditTeamModal = (props) => {
     </SafeAreaView>
   );
 };
-export default EditTeamModal;
+
+export default EditUserModal;

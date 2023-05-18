@@ -16,7 +16,7 @@ import {
   onSnapshot,
   addDoc,
 } from "firebase/firestore";
-import db from "../database/firebase";
+import db from "../../database/firebase";
 import tw from "tailwind-react-native-classnames";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 
@@ -88,7 +88,7 @@ const AddTask = (props) => {
         state:1,
         teamId: selectedValue,
       });
-      props.navigation.navigate("Home");
+      props.navigation.goBack();
     } catch (error) {
       console.log(error);
     }

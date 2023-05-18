@@ -27,29 +27,6 @@ const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // Login function
-  // const login = async () => {
-  //   if (email.length === 0 && password.length === 0) {
-  //     alert("Please enter an email and password");
-  //   } else {
-  //     const p = query(collection(db, "admins"), where("email", "==", email));
-  //     const q = query(collection(db, "users"), where("email", "==", email));
-  //     const pQuerySnapshot = await getDocs(p);
-  //     const querySnapshot = await getDocs(q);
-  //     querySnapshot.forEach((doc) => {
-  //       if (hashPassword(password) === doc.data().password) {
-  //         const userData = doc.data();
-  //         userData.id = doc.id;
-  //         storeGlobalData({ user: userData });
-  //         checkSession(userData);
-  //         props.navigation.navigate("Home");
-
-  //       } else {
-  //         alert("Incorrect password");
-  //       }
-  //     });
-  //   }
-  // };
   const login = async () => {
     if (email.length === 0 && password.length === 0) {
       alert("Please enter an email and password");

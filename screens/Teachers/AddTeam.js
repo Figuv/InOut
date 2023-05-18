@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
-import db from "../database/firebase";
+import db from "../../database/firebase";
 
 const AddTeam = (props) => {
   const [teamName, setTeamName] = useState("");
