@@ -15,6 +15,7 @@ import {
   where,
   onSnapshot,
   addDoc,
+  getDocs,
 } from "firebase/firestore";
 import db from "../../database/firebase";
 import tw from "tailwind-react-native-classnames";
@@ -23,7 +24,6 @@ import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 const AddTask = (props) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
 
   const [teams, setTeams] = useState([]);
 
@@ -59,7 +59,6 @@ const AddTask = (props) => {
     [setOpenDF, setEndDate]
   );
 
-
   //Get teams
   useEffect(() => {
     const teamsRef = collection(db, "teams");
@@ -80,20 +79,37 @@ const AddTask = (props) => {
   //Add task
   const addTask = async () => {
     try {
-      await addDoc(collection(db, "tasks"), {
+      const taskRef = await addDoc(collection(db, "tasks"), {
         title,
         description,
         startDate,
         endDate,
-        state:1,
+        state: 1,
         teamId: selectedValue,
       });
+      const taskId = taskRef.id;
+
+      // Get users with matching teamId
+      const usersQuerySnapshot = await getDocs(
+        query(collection(db, "users"), where("teamId", "==", selectedValue))
+      );
+
+      const userTaskPromises = usersQuerySnapshot.docs.map(async (userDoc) => {
+        const userTaskRef = await addDoc(collection(db, "user_task"), {
+          state: 1,
+          userId: userDoc.id,
+          taskId: taskId,
+        });
+        console.log("Added user_task document with ID:", userTaskRef.id);
+      });
+
+      await Promise.all(userTaskPromises);
+
       props.navigation.goBack();
     } catch (error) {
       console.log(error);
     }
   };
-  
 
   return (
     <KeyboardAvoidingView
@@ -171,8 +187,8 @@ const AddTask = (props) => {
               </Text>
               <DropDownPicker
                 items={teams.map((team) => ({
-                  label:team.teamName,
-                  value:team.id,
+                  label: team.teamName,
+                  value: team.id,
                 }))}
                 open={open}
                 setOpen={setOpen}

@@ -17,6 +17,7 @@ import {
   onSnapshot,
   updateDoc,
   doc,
+  where,
 } from "firebase/firestore";
 import * as DocumentPicker from "expo-document-picker";
 import {
@@ -57,7 +58,7 @@ const TaskModal = (props) => {
   // Actualiza el estado de la tarea marcandola como completada
   const updateTaskStatus = async () => {
     try {
-      const docRef = doc(db, "tasks", id);
+      const docRef = doc(db, "user_task", where("taskId", "==", id));
       await updateDoc(docRef, { state: 0 });
       setTaskStatus("done");
       setModalVisible(false);
