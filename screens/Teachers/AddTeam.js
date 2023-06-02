@@ -9,8 +9,12 @@ import {
 import React, { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import db from "../../database/firebase";
+import { AppContext } from "../../AppContext";
 
 const AddTeam = (props) => {
+  const {globalData}=AppContext;
+  const {user}=globalData;
+  const{id}=user;
   const [teamName, setTeamName] = useState("");
 
   // Create team function
@@ -21,6 +25,7 @@ const AddTeam = (props) => {
       try {
         await addDoc(collection(db, "teams"), {
           teamName: teamName,
+          adminId: id
         });
         props.navigation.navigate("Home");
       } catch (error) {

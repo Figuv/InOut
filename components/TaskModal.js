@@ -18,6 +18,7 @@ import {
   updateDoc,
   doc,
   where,
+  getDocs,
 } from "firebase/firestore";
 import * as DocumentPicker from "expo-document-picker";
 import {
@@ -31,7 +32,7 @@ import storage from "../database/storage";
 
 const TaskModal = (props) => {
   const { taskData } = props.route.params; // obtén los datos del equipo desde las props
-  const {user} = props.route.params;
+  const { user } = props.route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [taskStatus, setTaskStatus] = useState(taskData.state);
   const [timeRemaining, setTimeRemaining] = useState(""); // Agrega el estado para el tiempo restante
@@ -58,14 +59,25 @@ const TaskModal = (props) => {
   // Actualiza el estado de la tarea marcandola como completada
   const updateTaskStatus = async () => {
     try {
-      const docRef = doc(db, "user_task", where("taskId", "==", id));
-      await updateDoc(docRef, { state: 0 });
-      setTaskStatus("done");
-      setModalVisible(false);
+      const userTaskQuerySnapshot = await getDocs(
+        query(
+          collection(db, "user_task"),
+          where("taskId", "==", id.trim()),
+          where("userId", "==", user.id.trim())
+        )
+      );
+  
+      const updatePromises = userTaskQuerySnapshot.docs.map(async (doc) => {
+        const userTaskRef = doc.ref;
+        await updateDoc(userTaskRef, { state: 0 });
+      });
+  
+      await Promise.all(updatePromises);
       props.navigation.goBack();
-      console.log("Document updated successfully!");
+  
+      console.log("Documents updated successfully!");
     } catch (error) {
-      console.error("Error updating task status: ", error);
+      console.error("Error updating task status:", error);
     }
   };
 
@@ -77,8 +89,6 @@ const TaskModal = (props) => {
   //upload image
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-
-  
 
   const handleUpload = async () => {
     try {
@@ -114,7 +124,7 @@ const TaskModal = (props) => {
         // const snapshot = await uploadBytes(fileRef, uri);
         // const url = await getDownloadURL(snapshot.ref);
 
-        setFile({ uri: url, name: name , icon : fileIcons.mp3});
+        setFile({ uri: url, name: name });
         setUploading(false);
       }
     } catch (error) {
@@ -122,8 +132,6 @@ const TaskModal = (props) => {
       setUploading(false);
     }
   };
-
-  
 
   return (
     <SafeAreaView className="flex-1 bg-[#6F47EB]">
@@ -164,7 +172,10 @@ const TaskModal = (props) => {
               editable={false}
               placeholderTextColor="black"
             />
-            <Image source={file ? file.icon : null} style={{ width: 50, height: 50 }} />
+            <Image
+              source={file ? file.icon : null}
+              style={{ width: 50, height: 50 }}
+            />
 
             {uploading ? (
               <Text>Uploading file...</Text>
