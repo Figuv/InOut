@@ -40,7 +40,7 @@ const Tasks = (props) => {
   }, []);
 
   const showModal = (taskData) => {
-    props.navigation.navigate("ModalTask", { taskData });
+    props.navigation.navigate("ModalTask", { taskData, user });
   };
 
   return (

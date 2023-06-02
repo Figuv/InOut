@@ -30,6 +30,7 @@ import storage from "../database/storage";
 
 const TaskModal = (props) => {
   const { taskData } = props.route.params; // obtén los datos del equipo desde las props
+  const {user} = props.route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [taskStatus, setTaskStatus] = useState(taskData.state);
   const [timeRemaining, setTimeRemaining] = useState(""); // Agrega el estado para el tiempo restante
@@ -85,7 +86,7 @@ const TaskModal = (props) => {
       if (result.type !== "cancel") {
         const { uri, name } = result;
         const newUri = Platform.OS === "ios" ? uri.replace("file://", "") : uri;
-        const path = `files/${name}`;
+        const path = `${user.id}/${id}/${name}`;
         // const fileRef = ref(storage, path);
         const fileRef = ref(storage, path);
 

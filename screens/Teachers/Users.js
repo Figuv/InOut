@@ -50,10 +50,10 @@ const Users = (props) => {
               />
             ))}
           </ScrollView>
-          <View className="flex-row">
+          <View className="flex-row w-screen bg-white rounded-full p-1 justify-evenly">
             <TouchableOpacity
               onPress={() => props.navigation.navigate("AddUser")}
-              className="bg-white py-2 px-4 rounded-lg"
+              className="bg-white p-2 rounded-full shadow-lg items-center"
             >
               <FontAwesome
                 name="user-plus"

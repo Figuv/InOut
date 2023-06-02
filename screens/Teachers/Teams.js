@@ -54,7 +54,7 @@ const Teams = (props) => {
           </View>
 
           <ScrollView
-            className="flex-1 w-full h-full"
+            className="flex-1 w-max h-full"
             showsVerticalScrollIndicator={false}
           >
             {teams.map((team, index) => {
@@ -67,10 +67,10 @@ const Teams = (props) => {
               );
             })}
           </ScrollView>
-          <View className="flex-row">
+          <View className="flex-row w-screen bg-white rounded-full p-1 justify-evenly">
             <TouchableOpacity
               onPress={() => props.navigation.navigate("Users")}
-              className="bg-white py-2 px-4 rounded-lg"
+              className="bg-white p-2 rounded-full shadow-lg items-center"
             >
               <FontAwesome
                 name="users"
@@ -81,7 +81,7 @@ const Teams = (props) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => props.navigation.navigate("AddTeam")}
-              className="bg-white py-2 px-4 rounded-lg"
+              className="bg-white p-2 rounded-full shadow-lg items-center"
             >
               <FontAwesome
                 name="plus"
@@ -92,7 +92,7 @@ const Teams = (props) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => props.navigation.navigate("AddTask")}
-              className="bg-white py-2 px-4 rounded-lg"
+              className="bg-white p-2 rounded-full shadow-lg items-center"
             >
               <FontAwesome
                 name="tasks"
