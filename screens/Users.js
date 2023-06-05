@@ -1,17 +1,35 @@
-import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ImageBackground} from "react-native";
-import { collection, query, where, getDocs, doc, updateDoc, onSnapshot, } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, ScrollView} from "react-native";
+import { collection, query, where, onSnapshot, orderBy } from "firebase/firestore";
 import db from "../database/firebase";
 import Constants from 'expo-constants';
-import { AppContext } from "../AppContext";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import UserCard from "../components/UserCard";
+import { MaterialCommunityIcons, AntDesign, SimpleLineIcons } from "@expo/vector-icons";
 
-const Home = (props) => {
-  const { globalData } = useContext(AppContext);
-  const { user } = globalData;
+const Users = (props) => {
+  const [users, setUsers] = useState([]);
+
+  // Get users
+  useEffect(() => {
+    const q = query(collection(db, "users"), orderBy("name", "asc"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const usersData = [];
+      querySnapshot.forEach((doc) => {
+        // usersData.push(doc.data());
+        const user = doc.data();
+        user.id = doc.id; // agregar la propiedad "id" al objeto team
+        usersData.push(user);
+      });
+      setUsers(usersData);
+    });
+    return unsubscribe;
+  }, []);
+  const showModal = (userData) => {
+    props.navigation.navigate("ModalUser", { userData });
+  };
 
   return (
-    <View className="bg-[#f8f9fa] h-full w-full items-center">
+    <View className="bg-[#fff] h-full w-full items-center">
       {/* Navbar */}
       <View className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow" style={styles.container}>
         {/* Logo */}
@@ -26,14 +44,14 @@ const Home = (props) => {
         {/* Menu */}
         <View className="w-4/6 h-full flex-row justify-around px-2">
           {/* Inicio */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
+          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Home")}
           >
             <MaterialCommunityIcons name="home-variant-outline" size={24} color="white" />
             <Text className="text-white text-xs md:text-lg font-bold">Inicio</Text>
           </TouchableOpacity>
           {/* Estudiantes */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
             onPress={() => props.navigation.navigate("Users")}
           >
             <MaterialCommunityIcons name="account-tie-outline" size={28} color="white" />
@@ -70,21 +88,39 @@ const Home = (props) => {
           </TouchableOpacity>
         </View>
       </View>
-      {/*Contenido*/}
-      <View className="border-[#e7e7e6] border rounded w-11/12 h-5/6 my-5 shadow p-1 bg-white">
-        <View className="h-20 justify-between items-center border-b-2 border-[#e7e7e6] py-3">
-          {/*Texto Bienvenida*/}
-          <View className="w-full items-center justify-center">
-            <Text className="text-[#232323] text-lg font-bold">{user.name}</Text>
-            <Text className="text-[#7e7e7e] text-sm font-bold">Ahora te encuentras en la ventana de Administrador</Text>
-          </View>
+      {/* Contenido de Usuarios */}
+      <View className="bg-white border-[#e7e7e6] border rounded w-11/12 h-5/6 my-5 shadow p-1">
+        {/*Barra superior*/}
+        <View className="h-20 flex-row justify-around items-center border-b-2 border-[#e7e7e6]">
+          {/*Agregar Usuarios*/}
+          <TouchableOpacity className="w-full h-full flex-col md:flex-row items-center justify-center py-3"
+            onPress={() => props.navigation.navigate("AddUser")}
+          >
+            <View className='w-8 h-8 border-2 border-[#6F47EB] rounded-full justify-center items-center'>
+              <SimpleLineIcons name="user-follow" size={20} color="#6F47EB" />
+            </View>
+            <View className="ml-1">
+              <Text className="text-[#232323] text-base font-bold">Agregar Usuario</Text>
+            </View>
+          </TouchableOpacity>
         </View>
+        {/*Contenido*/}
+        <ScrollView className="w-full h-full">
+          {users.map((user, index) => (
+            <UserCard
+              key={index}
+              userData={user}
+              screen="Users"
+              onPress={() => showModal(user)}
+            />
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
 };
 
-export default Home;
+export default Users;
 
 const styles = StyleSheet.create({
   container: {

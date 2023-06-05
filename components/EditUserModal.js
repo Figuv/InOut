@@ -1,46 +1,26 @@
-import { View, Text, SafeAreaView, TouchableOpacity, TextInput, StyleSheet, Image } from "react-native";
-import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, } from "react-native";
+import { collection, query, where, onSnapshot, deleteDoc, doc, updateDoc, } from "firebase/firestore";
 import db from "../database/firebase";
 import Constants from 'expo-constants';
-import { MaterialCommunityIcons, AntDesign, Ionicons } from "@expo/vector-icons";
-import { SHA256 } from "crypto-js";
+import { MaterialCommunityIcons, AntDesign, } from "@expo/vector-icons";
 
-const AddUser = (props) => {
-  const [email, setEmail] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [hours, setHours] = useState(0);
+const EditUserModal = (props) => {
+  const { userData } = props.route.params;
+  const { id } = userData;
+  const [userName, setUserName] = useState(userData.name);
+  const [userEmail, setUserEmail] = useState(userData.email);
+  const [userHours, setUserHours] = useState(userData.hours);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const hashPassword = (password) => {
-    const hash = SHA256(password).toString();
-    return hash;
-  };
-
-  const handleCreateAccount = async () => {
-    console.log("Creating account...");
-
-    if (email.length === 0 && hours > 0) {
-      alert("Please enter an email");
-    } else {
-      try {
-        await addDoc(collection(db, "users"), {
-          name: name,
-          email: email + "@est.univalle.edu",
-          password: hashPassword(password),
-          teamId: "",
-          hours: hours,
-        });
-        props.navigation.navigate("Users");
-      } catch (error) {
-        console.log(error);
-      }
-    }
+  //do the logic to the function editTeam
+  const editUser = async () => {
+    const userRef = doc(db, "users", id);
+    await updateDoc(userRef, {
+      name: userName,
+      email: userEmail,
+      hours: userHours,
+    });
+    props.navigation.navigate("Users");
   };
 
   return (
@@ -105,62 +85,66 @@ const AddUser = (props) => {
       </View>
       {/* Contenido */}
       <View className="bg-white border-[#e7e7e6] border rounded w-11/12 h-5/6 my-5 shadow">
-        {/* Informacion */}
+        {/* Formulario */}
         <View className="w-full h-full items-center px-4">
           {/* Header */}
           <View className="w-full flex-row my-4 items-center">
             {/* Boton retroceder */}
-            <TouchableOpacity className="w-1/5 rounded-lg p-1 justify-center items-center lg:items-start lg:ml-4"
+            <TouchableOpacity className="w-1/5 rounded-lg p-1 justify-center items-center"
               onPress={() => {props.navigation.goBack();}}
             >
               <AntDesign name="arrowleft" size={24} color="#6F47EB" />
             </TouchableOpacity>
-            <Text className="w-3/5 text-black font-black text-2xl text-center">Nuevo Usuario</Text>
+            <Text className="w-3/5 text-black font-black text-2xl text-center">Editar Usuario</Text>
           </View>
-          <View>
-            <View className="space-y-4 mb-60 items-center">
+          <View className="items-center">
+            {/* Renderizar los campos editables */}
+            <View className="items-center px-4">
+              <Text className="text-black text-lg font-bold">Nombre</Text>
               <TextInput
-                className="bg-[#f8f9fa] rounded-2xl w-80 lg:w-96 h-12 px-4 font-bold border border-[#e7e7e6]"
-                placeholder="Nombre Completo"
-                onChangeText={(text) => setName(text)}
-              ></TextInput>
-              <View className="bg-[#f8f9fa] rounded-2xl w-80 lg:w-96 flex-row border border-[#e7e7e6] items-center">
-                <TextInput
-                  className="w-3/5 h-12 px-4 font-bold"
-                  placeholder="Correo Electronico"
-                  autoCapitalize="none"
-                  onChangeText={(text) => setEmail(text)}
-                ></TextInput>
-                <Text className="w-2/5 text-black font-bold justify-center">@est.univalle.edu</Text>
-              </View>
+                className="bg-white rounded-2xl w-80 lg:w-96 h-12 px-4 font-bold mb-2 border border-[#e7e7e6]"
+                placeholder="Nombre de Usuario"
+                value={userName}
+                onChangeText={(text) => setUserName(text)}
+              />
+            </View>
+            <View className="items-center px-4">
+              <Text className="text-black text-lg font-bold">Correo Electronico</Text>
               <TextInput
-                className="bg-[#f8f9fa] rounded-2xl w-80 lg:w-96 h-12 px-4 font-bold border border-[#e7e7e6]"
+                className="bg-white rounded-2xl w-80 lg:w-96 h-12 px-4 font-bold mb-2 border border-[#e7e7e6]"
+                placeholder="Correo Electronico"
+                value={userEmail}
+                onChangeText={(text) => setUserEmail(text)}
+              />
+            </View>
+            <View className="items-center px-4">
+              <Text className="text-black text-lg font-bold">Horas de Beca</Text>
+              <TextInput
+                className="rounded-2xl w-80 lg:w-96 h-12 px-4 font-bold border border-[#e7e7e6]"
                 placeholder="Horas de Beca"
-                onChangeText={(text) => setHours(text)}
+                value={userHours}
+                onChangeText={(text) => setUserHours(text)}
                 keyboardType="numeric"
               ></TextInput>
-              <View className="bg-[#f8f9fa] rounded-2xl w-80 lg:w-96 flex-row border border-[#e7e7e6] items-center">
-                <TextInput
-                  className="w-4/5 h-12 px-4 font-bold"
-                  placeholder="Contraseña"
-                  onChangeText={(text) => setPassword(text)}
-                  secureTextEntry={!showPassword}
-                ></TextInput>
-                <TouchableOpacity className="w-1/5 h-12 justify-center items-center border-l border-[#e7e7e6] "
-                  onPress={togglePasswordVisibility}
-                >
-                  <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#6F47EB" />
-                </TouchableOpacity>
-              </View>
-              {/* Boton de Creacion */}
-              <View>
-                <TouchableOpacity
-                  className="bg-[#6F47EB] rounded-2xl w-80 h-12 justify-center items-center"
-                  onPress={handleCreateAccount}
-                >
-                  <Text className="text-[#FFFFFF] font-bold text-2xl">Guardar</Text>
-                </TouchableOpacity>
-              </View>
+            </View>
+            {/* Botones de guardar y cancelar */}
+            <View className="w-80 lg:w-96 flex-row items-center justify-around mt-5 space-x-3">
+              <TouchableOpacity
+                onPress={() => {
+                  editUser();
+                }}
+                className="bg-[#6F47EB] rounded-2xl w-36 h-12 justify-center items-center shadow-lg"
+              >
+                <Text className="text-white text-lg font-bold">Guardar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  props.navigation.goBack();
+                }}
+                className="bg-[#EC2008] rounded-2xl w-36 h-12 justify-center items-center shadow-lg"
+              >
+                <Text className="text-white text-lg font-bold">Cancelar</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -169,10 +153,10 @@ const AddUser = (props) => {
   );
 };
 
-export default AddUser;
+export default EditUserModal;
 
 const styles = StyleSheet.create({
   container: {
       paddingTop: Constants.statusBarHeight,
-  }
+  },
 });
