@@ -54,12 +54,12 @@ const Home = (props) => {
             <Text className="text-white text-xs md:text-lg font-bold">Tareas</Text>
           </TouchableOpacity>
           {/* Horas */}
-          {/* <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Hours")}
           >
             <AntDesign name="clockcircleo" size={24} color="white"/>
             <Text className="text-white text-xs md:text-lg font-bold">Horas</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
         {/* Perfil */}
         <View className="w-1/6 h-full">

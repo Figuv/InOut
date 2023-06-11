@@ -24,6 +24,7 @@
     "crypto-js": "^4.1.1",
     "expo": "~48.0.6",
     "expo-document-picker": "^11.2.2",
+    "expo-location": "^15.1.1",
     "expo-status-bar": "~1.4.4",
     "firebase": "^9.21.0",
     "nativewind": "^2.0.11",

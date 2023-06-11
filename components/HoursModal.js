@@ -1,49 +1,90 @@
 import {
   View,
   Text,
+  ScrollView,
+  TouchableOpacity,
   SafeAreaView,
   StyleSheet,
   Image,
-  TouchableOpacity,
-  ScrollView,
 } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import db from "../database/firebase";
-import React, { useContext, useEffect, useState } from "react";
+import DropDownPicker from "react-native-dropdown-picker";
+import UserCard from "./UserCard";
 import Constants from "expo-constants";
-import { AppContext } from "../AppContext";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
-import TeamCard from "../components/TeamCard";
 
-const Hours = (props) => {
-  const { globalData } = useContext(AppContext);
-  const { user } = globalData;
-  const [teams, setTeams] = useState([]);
+const HoursModal = (props) => {
+  const { teamData } = props.route.params;
+  const [users, setUsers] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const { id } = teamData;
+  const [addUsers, setAddUsers] = useState([]);
 
+  //Dorp down picker open and value
+  const [open, setOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState(null);
+
+  //Obtiene usuarios y tareas del equipo
   useEffect(() => {
-    const q = query(
-      collection(db, "teams"),
-      where("coordinatorId", "==", user.id.trim())
+    const q = query(collection(db, "users"), where("teamId", "==", ""));
+    const t = query(
+      collection(db, "tasks"),
+      where("teamId", "==", id.trim()),
+      where("state", "==", 1)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const teamsData = [];
+      const users = [];
       querySnapshot.forEach((doc) => {
-        // teamsData.push(doc.data());
-        const team = doc.data();
-        team.id = doc.id; // agregar la propiedad "id" al objeto team
-        teamsData.push(team);
+        const user = doc.data();
+        user.id = doc.id;
+        users.push(user);
       });
-      setTeams(teamsData);
+      setAddUsers(users);
+    });
+    const unsubscribeT = onSnapshot(t, (querySnapshot) => {
+      const teamTask = [];
+      querySnapshot.forEach((doc) => {
+        const task = doc.data();
+        task.id = doc.id;
+        teamTask.push(task);
+      });
+      setTasks(teamTask);
+    });
+    return unsubscribe, unsubscribeT;
+  }, []);
+
+  //Get users of the team
+  useEffect(() => {
+    const q = query(collection(db, "users"), where("teamId", "==", id.trim()));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const members = [];
+      querySnapshot.forEach((doc) => {
+        const member = doc.data();
+        member.id = doc.id;
+        members.push(member);
+      });
+      setUsers(members);
     });
     return unsubscribe;
   }, []);
 
-  const showModal = (teamData) => {
-    props.navigation.navigate("ModalHours", { teamData });
+  //Show user hours list
+  const showHours = (user) => {
+    props.navigation.navigate("ModalListHours", { user });
   };
 
   return (
-    <View className="bg-[#fff] h-full w-full items-center">
+    <View className="bg-[#f8f9fa] h-full w-full items-center">
       {/* Navbar */}
       <View
         className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow"
@@ -146,29 +187,41 @@ const Hours = (props) => {
           </TouchableOpacity>
         </View>
       </View>
-      {/* Contenido */}
       <View className="bg-white border-[#e7e7e6] border rounded w-11/12 h-5/6 my-5 shadow p-1">
-        {/*Lista de grupos*/}
-        <ScrollView
-          className="flex-1 w-full h-full"
-          showsVerticalScrollIndicator={false}
-        >
-          {teams.map((team, index) => {
-            return (
-              <TeamCard
-                key={index}
-                teamName={team.teamName}
-                onPress={() => showModal(team)}
-              />
-            );
-          })}
-        </ScrollView>
+        {/*Barra superior*/}
+        <View className="h-20 flex-row justify-around items-center border-b-2 border-[#e7e7e6] mb-1">
+          {/*Nombre del Grupos*/}
+          <Text className="text-black text-2xl font-bold">
+            {teamData.teamName}
+          </Text>
+        </View>
+        {/*Contenido*/}
+        <View className="w-full h-5/6">
+          {/*Contenedor de listas*/}
+          <View className="w-full h-full items-center lg:flex-row">
+            <View className="w-full h-full border-[#e7e7e6] border rounded">
+              <ScrollView className="w-full">
+                <Text className="text-black text-lg text-center font-bold">
+                  Miembros
+                </Text>
+                {users.map((member, index) => (
+                  <UserCard
+                    key={index}
+                    onPress={() => showHours(member)}
+                    screen="HoursModal"
+                    userData={member}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   );
 };
 
-export default Hours;
+export default HoursModal;
 
 const styles = StyleSheet.create({
   container: {

@@ -23,7 +23,6 @@ import Teams from "./screens/Teams";
 import AddTeam from "./screens/AddTeam";
 import ModalTeam from "./components/TeamModal";
 import TeamCard from "./components/TeamCard";
-import Hours from "./screens/Hours";
 import EditTeamModal from "./components/EditTeamModal";
 
 import Users from "./screens/Users";
@@ -31,11 +30,16 @@ import UserModal from "./components/UserModal";
 import AddUser from "./screens/AddUser";
 import EditUserModal from "./components/EditUserModal";
 
+import Hours from "./screens/Hours";
+import HoursModal from "./components/HoursModal";
+
+
 import Coordinators from "./screens/Coordinators";
 import AddCoordinator from "./screens/AddCoordinator";
 import CoordinatorModal from "./components/CoordinatorModal";
 import EditCoordinatorModal from "./components/EditCoordinatorModal";
 import CoordinatorTaskModal from "./components/CoordinatorTaskModal";
+import HoursListModal from "./components/HoursListModal";
 
 NativeWindStyleSheet.setOutput({
   default: "native",
@@ -181,6 +185,16 @@ function MyStack() {
           options={{ headerShown: false }}
           name="ModalEditTask"
           component={EditTaskModal}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ModalHours"
+          component={HoursModal}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="ModalListHours"
+          component={HoursListModal}
         />
       </Stack.Group>
     </Stack.Navigator>
