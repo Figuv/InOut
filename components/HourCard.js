@@ -28,20 +28,23 @@ export default function HourCard(props) {
           <View className="flex-row w-full justify-between">
             <View className="flex-row mb-2">
               <Text className="text-sm text-gray-500">
-                Login hour: {session.loginTime}   
+                Login hour: {session.loginTime}
               </Text>
               <Text className="text-sm text-gray-500">
-                   Logout hour: {session.logoutTime}
+                Logout hour: {session.logoutTime}
+              </Text>
+              <Text className="text-sm text-gray-500">
+                Total hours: {session.hours}
               </Text>
             </View>
             <TouchableOpacity
-                className="flex-row items-center bg-[#e7e7e6] rounded-full px-2 py-1 mr-2"
-                onPress={openMap}
-              >
-                <Text className="text-[#000] text-sm mr-1">
-                  Ubicacion del login
-                </Text>
-              </TouchableOpacity>
+              className="flex-row items-center bg-[#e7e7e6] rounded-full px-2 py-1 mr-2"
+              onPress={openMap}
+            >
+              <Text className="text-[#000] text-sm mr-1">
+                Ubicacion del login
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
