@@ -1,10 +1,23 @@
-import { View, Text, SafeAreaView, TouchableOpacity, TextInput, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+  Image,
+} from "react-native";
 import React, { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import db from "../database/firebase";
-import Constants from 'expo-constants';
-import { MaterialCommunityIcons, AntDesign, Ionicons } from "@expo/vector-icons";
+import Constants from "expo-constants";
+import {
+  MaterialCommunityIcons,
+  AntDesign,
+  Ionicons,
+} from "@expo/vector-icons";
 import { SHA256 } from "crypto-js";
+import { FontAwesome } from "@expo/vector-icons";
 
 const AddUser = (props) => {
   const [email, setEmail] = useState("");
@@ -46,60 +59,101 @@ const AddUser = (props) => {
   return (
     <View className="bg-[#f8f9fa] h-full w-full items-center">
       {/* Navbar */}
-      <View className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow" style={styles.container}>
+      <View
+        className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow"
+        style={styles.container}
+      >
         {/* Logo */}
         <View className="w-1/6 h-full">
           <TouchableOpacity
             className=" flex-1 items-center justify-center"
-            onPress={() => {props.navigation.navigate("Home")}}
+            onPress={() => {
+              props.navigation.navigate("Home");
+            }}
           >
-            <Image source={require('../assets/logoUnivalle.png')} className="h-14" style={{width: '100%', resizeMode:"contain"}}/>
+            <Image
+              source={require("../assets/logoUnivalle.png")}
+              className="h-14"
+              style={{ width: "100%", resizeMode: "contain" }}
+            />
           </TouchableOpacity>
         </View>
         {/* Menu */}
         <View className="w-4/6 h-full flex-row justify-around px-2">
           {/* Inicio */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Home")}
           >
-            <MaterialCommunityIcons name="home-variant-outline" size={24} color="white" />
-            <Text className="text-white text-xs md:text-lg font-bold">Inicio</Text>
+            <MaterialCommunityIcons
+              name="home-variant-outline"
+              size={24}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Inicio
+            </Text>
           </TouchableOpacity>
           {/* Estudiantes */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
             onPress={() => props.navigation.navigate("Users")}
           >
-            <MaterialCommunityIcons name="account-tie-outline" size={28} color="white" />
-            <Text className="text-white text-xs md:text-lg font-bold">Estudiantes</Text>
+            <MaterialCommunityIcons
+              name="account-tie-outline"
+              size={28}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Estudiantes
+            </Text>
           </TouchableOpacity>
           {/* Grupos */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Teams")}
           >
-            <MaterialCommunityIcons name="account-group-outline" size={28} color="white" />
-            <Text className="text-white text-xs md:text-lg font-bold">Grupos</Text>
+            <MaterialCommunityIcons
+              name="account-group-outline"
+              size={28}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Grupos
+            </Text>
           </TouchableOpacity>
           {/* Tareas */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Tasks")}
           >
-            <AntDesign name="book" size={24} color="white"/>
-            <Text className="text-white text-xs md:text-lg font-bold">Tareas</Text>
+            <AntDesign name="book" size={24} color="white" />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Tareas
+            </Text>
           </TouchableOpacity>
           {/* Horas */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Hours")}
           >
-            <AntDesign name="clockcircleo" size={24} color="white"/>
-            <Text className="text-white text-xs md:text-lg font-bold">Horas</Text>
+            <AntDesign name="clockcircleo" size={24} color="white" />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Horas
+            </Text>
           </TouchableOpacity>
         </View>
         {/* Perfil */}
         <View className="w-1/6 h-full">
-          <TouchableOpacity className="h-full items-center justify-center"
-            onPress={() => {props.navigation.navigate("Profile")}}
+          <TouchableOpacity
+            className="h-full items-center justify-center"
+            onPress={() => {
+              props.navigation.navigate("Profile");
+            }}
           >
-            <Image source={{uri: "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg"}} className="h-12 w-12 rounded-full"/>
+            <View className="h-12 w-12 rounded-full object-contain resize">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -110,12 +164,17 @@ const AddUser = (props) => {
           {/* Header */}
           <View className="w-full flex-row my-4 items-center">
             {/* Boton retroceder */}
-            <TouchableOpacity className="w-1/5 rounded-lg p-1 justify-center items-center lg:items-start lg:ml-4"
-              onPress={() => {props.navigation.goBack();}}
+            <TouchableOpacity
+              className="w-1/5 rounded-lg p-1 justify-center items-center lg:items-start lg:ml-4"
+              onPress={() => {
+                props.navigation.goBack();
+              }}
             >
               <AntDesign name="arrowleft" size={24} color="#6F47EB" />
             </TouchableOpacity>
-            <Text className="w-3/5 text-black font-black text-2xl text-center">Nuevo Usuario</Text>
+            <Text className="w-3/5 text-black font-black text-2xl text-center">
+              Nuevo Usuario
+            </Text>
           </View>
           <View>
             <View className="space-y-4 mb-60 items-center">
@@ -131,7 +190,9 @@ const AddUser = (props) => {
                   autoCapitalize="none"
                   onChangeText={(text) => setEmail(text)}
                 ></TextInput>
-                <Text className="w-2/5 text-black font-bold justify-center">@est.univalle.edu</Text>
+                <Text className="w-2/5 text-black font-bold justify-center">
+                  @est.univalle.edu
+                </Text>
               </View>
               <TextInput
                 className="bg-[#f8f9fa] rounded-2xl w-80 lg:w-96 h-12 px-4 font-bold border border-[#e7e7e6]"
@@ -146,10 +207,15 @@ const AddUser = (props) => {
                   onChangeText={(text) => setPassword(text)}
                   secureTextEntry={!showPassword}
                 ></TextInput>
-                <TouchableOpacity className="w-1/5 h-12 justify-center items-center border-l border-[#e7e7e6] "
+                <TouchableOpacity
+                  className="w-1/5 h-12 justify-center items-center border-l border-[#e7e7e6] "
                   onPress={togglePasswordVisibility}
                 >
-                  <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#6F47EB" />
+                  <Ionicons
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    size={24}
+                    color="#6F47EB"
+                  />
                 </TouchableOpacity>
               </View>
               {/* Boton de Creacion */}
@@ -158,7 +224,9 @@ const AddUser = (props) => {
                   className="bg-[#6F47EB] rounded-2xl w-80 h-12 justify-center items-center"
                   onPress={handleCreateAccount}
                 >
-                  <Text className="text-[#FFFFFF] font-bold text-2xl">Guardar</Text>
+                  <Text className="text-[#FFFFFF] font-bold text-2xl">
+                    Guardar
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -173,6 +241,6 @@ export default AddUser;
 
 const styles = StyleSheet.create({
   container: {
-      paddingTop: Constants.statusBarHeight,
-  }
+    paddingTop: Constants.statusBarHeight,
+  },
 });

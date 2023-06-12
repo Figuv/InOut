@@ -1,16 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, StyleSheet, } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  KeyboardAvoidingView,
+  StyleSheet,
+} from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { collection, query, where, onSnapshot, addDoc, } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  addDoc,
+  getDocs,
+} from "firebase/firestore";
 import db from "../database/firebase";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+import { AppContext } from "../AppContext";
 
 const AddTask = (props) => {
+  const { globalData } = useContext(AppContext);
+  const { user } = globalData;
+  const { id } = user;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
 
   const [teams, setTeams] = useState([]);
 
@@ -46,12 +65,10 @@ const AddTask = (props) => {
     [setOpenDF, setEndDate]
   );
 
-
   //Get teams
   useEffect(() => {
-    const teamsRef = collection(db, "teams");
-    const teamsQuery = query(teamsRef);
-    const unsubscribe = onSnapshot(teamsQuery, (snapshot) => {
+    const q = query(collection(db, "teams"), where("coordinatorId", "==", id.trim()));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const teamsData = [];
       snapshot.forEach((doc) => {
         const team = doc.data();
@@ -66,97 +83,162 @@ const AddTask = (props) => {
 
   const addTask = async () => {
     try {
-      await addDoc(collection(db, "tasks"), {
+      const taskRef = await addDoc(collection(db, "tasks"), {
         title,
         description,
         startDate,
         endDate,
-        state:1,
+        state: 1,
         teamId: selectedValue,
       });
+      const taskId = taskRef.id;
+
+      // Get users with matching teamId
+      const usersQuerySnapshot = await getDocs(
+        query(collection(db, "users"), where("teamId", "==", selectedValue))
+      );
+
+      const userTaskPromises = usersQuerySnapshot.docs.map(async (userDoc) => {
+        const userTaskRef = await addDoc(collection(db, "user_task"), {
+          state: 1,
+          userId: userDoc.id,
+          taskId: taskId,
+        });
+        console.log("Added user_task document with ID:", userTaskRef.id);
+      });
+
+      await Promise.all(userTaskPromises);
+
       props.navigation.navigate("Tasks");
     } catch (error) {
       console.log(error);
     }
   };
-  
 
   return (
     <View className="bg-[#fff] h-full w-full items-center">
       {/* Navbar */}
-    <View className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow" style={styles.container}>
-      {/* Logo */}
-      <View className="w-1/6 h-full">
-        <TouchableOpacity
-          className=" flex-1 items-center justify-center"
-          onPress={() => {props.navigation.navigate("Home")}}
-        >
-          <Image source={require('../assets/logoUnivalle.png')} className="h-14" style={{width: '100%', resizeMode:"contain"}}/>
-        </TouchableOpacity>
+      <View
+        className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow"
+        style={styles.container}
+      >
+        {/* Logo */}
+        <View className="w-1/6 h-full">
+          <TouchableOpacity
+            className=" flex-1 items-center justify-center"
+            onPress={() => {
+              props.navigation.navigate("Home");
+            }}
+          >
+            <Image
+              source={require("../assets/logoUnivalle.png")}
+              className="h-14"
+              style={{ width: "100%", resizeMode: "contain" }}
+            />
+          </TouchableOpacity>
+        </View>
+        {/* Menu */}
+        <View className="w-4/6 h-full flex-row justify-around px-2">
+          {/* Inicio */}
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
+            onPress={() => props.navigation.navigate("Home")}
+          >
+            <MaterialCommunityIcons
+              name="home-variant-outline"
+              size={24}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Inicio
+            </Text>
+          </TouchableOpacity>
+          {/* Estudiantes */}
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
+            onPress={() => props.navigation.navigate("Users")}
+          >
+            <MaterialCommunityIcons
+              name="account-tie-outline"
+              size={28}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Estudiantes
+            </Text>
+          </TouchableOpacity>
+          {/* Grupos */}
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
+            onPress={() => props.navigation.navigate("Teams")}
+          >
+            <MaterialCommunityIcons
+              name="account-group-outline"
+              size={28}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Grupos
+            </Text>
+          </TouchableOpacity>
+          {/* Tareas */}
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white"
+            onPress={() => props.navigation.navigate("Tasks")}
+          >
+            <AntDesign name="book" size={24} color="white" />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Tareas
+            </Text>
+          </TouchableOpacity>
+          {/* Horas */}
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
+            onPress={() => props.navigation.navigate("Hours")}
+          >
+            <AntDesign name="clockcircleo" size={24} color="white" />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Horas
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {/* Perfil */}
+        <View className="w-1/6 h-full">
+          <TouchableOpacity
+            className="h-full items-center justify-center"
+            onPress={() => {
+              props.navigation.navigate("Profile");
+            }}
+          >
+            <View className="h-12 w-12 rounded-full object-contain resize">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
-      {/* Menu */}
-      <View className="w-4/6 h-full flex-row justify-around px-2">
-        {/* Inicio */}
-        <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
-          onPress={() => props.navigation.navigate("Home")}
-        >
-          <MaterialCommunityIcons name="home-variant-outline" size={24} color="white" />
-          <Text className="text-white text-xs md:text-lg font-bold">Inicio</Text>
-        </TouchableOpacity>
-        {/* Estudiantes */}
-        <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
-          onPress={() => props.navigation.navigate("Users")}
-        >
-          <MaterialCommunityIcons name="account-tie-outline" size={28} color="white" />
-          <Text className="text-white text-xs md:text-lg font-bold">Estudiantes</Text>
-        </TouchableOpacity>
-        {/* Grupos */}
-        <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
-          onPress={() => props.navigation.navigate("Teams")}
-        >
-          <MaterialCommunityIcons name="account-group-outline" size={28} color="white" />
-          <Text className="text-white text-xs md:text-lg font-bold">Grupos</Text>
-        </TouchableOpacity>
-        {/* Tareas */}
-        <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white"
-          onPress={() => props.navigation.navigate("Tasks")}
-        >
-          <AntDesign name="book" size={24} color="white"/>
-          <Text className="text-white text-xs md:text-lg font-bold">Tareas</Text>
-        </TouchableOpacity>
-        {/* Horas */}
-        <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
-          onPress={() => props.navigation.navigate("Hours")}
-        >
-          <AntDesign name="clockcircleo" size={24} color="white"/>
-          <Text className="text-white text-xs md:text-lg font-bold">Horas</Text>
-        </TouchableOpacity>
-      </View>
-      {/* Perfil */}
-      <View className="w-1/6 h-full">
-        <TouchableOpacity className="h-full items-center justify-center"
-          onPress={() => {props.navigation.navigate("Profile")}}
-        >
-          <Image source={{uri: "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg"}} className="h-12 w-12 rounded-full"/>
-        </TouchableOpacity>
-      </View>
-    </View>
-    {/*Contenido de Tareas*/}
+      {/*Contenido de Tareas*/}
       <View className="border-[#e7e7e6] border rounded w-11/12 h-5/6 my-5 shadow p-1">
         <View className="flex-col h-screen">
           {/* Header */}
-        <View className="w-full flex-row my-4 items-center">
-          {/* Boton retroceder */}
-          <TouchableOpacity className="w-1/5 rounded-lg p-1 justify-center items-center lg:items-start lg:ml-4"
-            onPress={() => {props.navigation.goBack();}}
-          >
-            <AntDesign name="arrowleft" size={24} color="#6F47EB" />
-          </TouchableOpacity>
-          <Text className="w-3/5 text-black font-black text-2xl text-center">Nueva Tarea</Text>
-        </View>
+          <View className="w-full flex-row my-4 items-center">
+            {/* Boton retroceder */}
+            <TouchableOpacity
+              className="w-1/5 rounded-lg p-1 justify-center items-center lg:items-start lg:ml-4"
+              onPress={() => {
+                props.navigation.goBack();
+              }}
+            >
+              <AntDesign name="arrowleft" size={24} color="#6F47EB" />
+            </TouchableOpacity>
+            <Text className="w-3/5 text-black font-black text-2xl text-center">
+              Nueva Tarea
+            </Text>
+          </View>
           <View className="space-y-4 items-center">
             <View className="mb-2">
-              <Text className="text-black font-bold text-lg text-center">Titulo de la tarea:</Text>
+              <Text className="text-black font-bold text-lg text-center">
+                Titulo de la tarea:
+              </Text>
               <TextInput
                 value={title}
                 onChangeText={(text) => setTitle(text)}
@@ -164,7 +246,9 @@ const AddTask = (props) => {
               />
             </View>
             <View className="mb-2">
-              <Text className="text-black font-bold text-lg text-center">Descripcion:</Text>
+              <Text className="text-black font-bold text-lg text-center">
+                Descripcion:
+              </Text>
               <TextInput
                 value={description}
                 onChangeText={(text) => setDescription(text)}
@@ -222,8 +306,8 @@ const AddTask = (props) => {
               </Text>
               <DropDownPicker
                 items={teams.map((team) => ({
-                  label:team.teamName,
-                  value:team.id,
+                  label: team.teamName,
+                  value: team.id,
                 }))}
                 open={open}
                 setOpen={setOpen}
@@ -263,6 +347,6 @@ export default AddTask;
 
 const styles = StyleSheet.create({
   container: {
-      paddingTop: Constants.statusBarHeight,
-  }
+    paddingTop: Constants.statusBarHeight,
+  },
 });

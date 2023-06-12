@@ -21,7 +21,7 @@ import db from "../database/firebase";
 import DropDownPicker from "react-native-dropdown-picker";
 import UserCard from "./UserCard";
 import Constants from "expo-constants";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons, AntDesign, FontAwesome } from "@expo/vector-icons";
 
 const HoursModal = (props) => {
   const { teamData } = props.route.params;
@@ -178,12 +178,9 @@ const HoursModal = (props) => {
               props.navigation.navigate("Profile");
             }}
           >
-            <Image
-              source={{
-                uri: "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
-              }}
-              className="h-12 w-12 rounded-full"
-            />
+            <View className="h-12 w-12 rounded-full">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
