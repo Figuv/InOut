@@ -1,14 +1,36 @@
+import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ImageBackground} from "react-native";
-import { collection, query, where, getDocs, doc, updateDoc, onSnapshot, } from "firebase/firestore";
+import TeamCard from "../components/TeamCard";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import db from "../database/firebase";
 import Constants from 'expo-constants';
 import { AppContext } from "../AppContext";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 
-const Home = (props) => {
+const Teams = (props) => {
+
   const { globalData } = useContext(AppContext);
   const { user } = globalData;
+  const [teams, setTeams] = useState([]);
+
+  useEffect(() => {
+    const q = query(collection(db, "teams"), where("coordinatorId", "==", user.id.trim()));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const teamsData = [];
+      querySnapshot.forEach((doc) => {
+        // teamsData.push(doc.data());
+        const team = doc.data();
+        team.id = doc.id; // agregar la propiedad "id" al objeto team
+        teamsData.push(team);
+      });
+      setTeams(teamsData);
+    });
+    return unsubscribe;
+  }, []);
+
+  const showModal = (teamData) => {
+    props.navigation.navigate("ModalTeam", { teamData });
+  };
 
   return (
     <View className="bg-[#f8f9fa] h-full w-full items-center">
@@ -26,7 +48,7 @@ const Home = (props) => {
         {/* Menu */}
         <View className="w-4/6 h-full flex-row justify-around px-2">
           {/* Inicio */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
+          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Home")}
           >
             <MaterialCommunityIcons name="home-variant-outline" size={24} color="white" />
@@ -40,7 +62,7 @@ const Home = (props) => {
             <Text className="text-white text-xs md:text-lg font-bold">Estudiantes</Text>
           </TouchableOpacity>
           {/* Grupos */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
             onPress={() => props.navigation.navigate("Teams")}
           >
             <MaterialCommunityIcons name="account-group-outline" size={28} color="white" />
@@ -70,24 +92,45 @@ const Home = (props) => {
           </TouchableOpacity>
         </View>
       </View>
-      {/*Contenido*/}
-      <View className="border-[#e7e7e6] border rounded w-11/12 h-5/6 my-5 shadow p-1 bg-white">
-        <View className="h-20 justify-between items-center border-b-2 border-[#e7e7e6] py-3">
-          {/*Texto Bienvenida*/}
-          <View className="w-full items-center justify-center">
-            <Text className="text-[#232323] text-lg font-bold">{user.name}</Text>
-            <Text className="text-[#7e7e7e] text-sm font-bold">Ahora te encuentras en la ventana de Administrador</Text>
-          </View>
+      {/*Contenido de Grupos*/}
+      <View className="bg-white border-[#e7e7e6] border rounded w-11/12 h-5/6 my-5 shadow p-1">
+        {/*Barra superior*/}
+        <View className="h-20 flex-row justify-around items-center border-b-2 border-[#e7e7e6]">
+          {/*Agregar Grupos*/}
+          <TouchableOpacity className="w-full h-full flex-col md:flex-row items-center justify-center py-3"
+            onPress={() => props.navigation.navigate("AddTeam")}
+          >
+            <View className='w-8 h-8 border-2 border-[#6F47EB] rounded-full justify-center items-center'>
+              <AntDesign name="addusergroup" size={24} color="#6F47EB"/>
+            </View>
+            <View className="ml-1">
+              <Text className="text-[#232323] text-base font-bold">Agregar Grupo</Text>
+            </View>
+          </TouchableOpacity>
         </View>
+        {/*Lista de grupos*/}
+        <ScrollView className="flex-1 w-full h-full"
+          showsVerticalScrollIndicator={false}
+        >
+          {teams.map((team, index) => {
+            return (
+              <TeamCard
+                key={index}
+                teamName={team.teamName}
+                onPress={() => showModal(team)}
+              />
+            );
+          })}
+        </ScrollView>
       </View>
     </View>
   );
 };
 
-export default Home;
+export default Teams;
 
 const styles = StyleSheet.create({
   container: {
       paddingTop: Constants.statusBarHeight,
-  },
+  }
 });
