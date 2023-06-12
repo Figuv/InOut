@@ -23,7 +23,7 @@ import Constants from "expo-constants";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import HourCard from "./HourCard";
 const HoursListModal = (props) => {
-  const {user } = props.route.params;
+  const { user } = props.route.params;
   const { id } = user;
   const [sessions, setSessions] = useState([]);
 
@@ -31,10 +31,7 @@ const HoursListModal = (props) => {
 
   useEffect(() => {
     const getSessions = async () => {
-      const q = query(
-        collection(db, "session"),
-        where("userId", "==", id)
-      );
+      const q = query(collection(db, "session"), where("userId", "==", id));
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const sessionsData = [];
@@ -153,12 +150,9 @@ const HoursListModal = (props) => {
               props.navigation.navigate("Profile");
             }}
           >
-            <Image
-              source={{
-                uri: "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
-              }}
-              className="h-12 w-12 rounded-full"
-            />
+            <View className="h-12 w-12 rounded-full">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -174,8 +168,7 @@ const HoursListModal = (props) => {
           <View className="w-full h-full items-center lg:flex-row">
             <View className="w-full h-full border-[#e7e7e6] border rounded">
               <ScrollView className="w-full">
-                <Text className="text-black text-lg text-center font-bold">
-                </Text>
+                <Text className="text-black text-lg text-center font-bold"></Text>
                 {/* Hours List */}
                 {sessions.map((session, index) => (
                   <HourCard key={index} session={session} />

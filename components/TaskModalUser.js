@@ -1,13 +1,38 @@
-import { View, Text, Image, ScrollView, Modal, TextInput, TouchableOpacity, KeyboardAvoidingView, StyleSheet, Platform, } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  Modal,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Platform,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { collection, query, onSnapshot, updateDoc, doc, where, getDocs, } from "firebase/firestore";
+import {
+  collection,
+  query,
+  onSnapshot,
+  updateDoc,
+  doc,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import * as DocumentPicker from "expo-document-picker";
-import { ref, uploadBytes, getDownloadURL, uploadBytesResumable, } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
 import storage from "../database/storage";
 import db from "../database/firebase";
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 import { AppContext } from "../AppContext";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 const Tasks = (props) => {
   const { taskData } = props.route.params; // obtén los datos del equipo desde las props
@@ -15,7 +40,7 @@ const Tasks = (props) => {
   const { user } = globalData;
   const [modalVisible, setModalVisible] = useState(false);
   const [taskStatus, setTaskStatus] = useState(taskData.state);
-   const [timeRemaining, setTimeRemaining] = useState("");
+  const [timeRemaining, setTimeRemaining] = useState("");
   const { id } = taskData;
 
   useEffect(() => {
@@ -44,15 +69,15 @@ const Tasks = (props) => {
           where("userId", "==", user.id.trim())
         )
       );
-  
+
       const updatePromises = userTaskQuerySnapshot.docs.map(async (doc) => {
         const userTaskRef = doc.ref;
         await updateDoc(userTaskRef, { state: 0 });
       });
-  
+
       await Promise.all(updatePromises);
       props.navigation.goBack();
-  
+
       console.log("Documents updated successfully!");
     } catch (error) {
       console.error("Error updating task status:", error);
@@ -108,50 +133,83 @@ const Tasks = (props) => {
 
   return (
     <View className="bg-[#fff] h-full w-full items-center">
-      <View className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow" style={styles.container}>
+      <View
+        className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow"
+        style={styles.container}
+      >
         <View className="w-1/4 h-full">
           <TouchableOpacity
             className=" flex-1 items-center justify-center"
-            onPress={() => {props.navigation.navigate("HomeUsers")}}
+            onPress={() => {
+              props.navigation.navigate("HomeUsers");
+            }}
           >
-            <Image source={require('../assets/logoUnivalle.png')} className="h-14" style={{width: '100%', resizeMode:"contain"}}/>
+            <Image
+              source={require("../assets/logoUnivalle.png")}
+              className="h-14"
+              style={{ width: "100%", resizeMode: "contain" }}
+            />
           </TouchableOpacity>
         </View>
         <View className="w-2/4 h-full flex-row justify-around">
-          <TouchableOpacity className="w-1/2 h-full justify-center"
-            onPress={() => {props.navigation.navigate("HomeUsers")}}
+          <TouchableOpacity
+            className="w-1/2 h-full justify-center"
+            onPress={() => {
+              props.navigation.navigate("HomeUsers");
+            }}
           >
-            <Text className="text-white text-lg font-bold text-center">Inicio</Text>
+            <Text className="text-white text-lg font-bold text-center">
+              Inicio
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity className="w-1/2 h-full justify-center border-b-4 border-white"
-            onPress={() => {props.navigation.navigate("TasksUsers")}}
+          <TouchableOpacity
+            className="w-1/2 h-full justify-center border-b-4 border-white"
+            onPress={() => {
+              props.navigation.navigate("TasksUsers");
+            }}
           >
-            <Text className="text-white text-lg font-bold text-center">Tareas</Text>
+            <Text className="text-white text-lg font-bold text-center">
+              Tareas
+            </Text>
           </TouchableOpacity>
         </View>
         <View className="w-1/4">
-          <TouchableOpacity className="h-full items-center justify-center"
-            onPress={() => {props.navigation.navigate("Profile")}}
+          <TouchableOpacity
+            className="h-full items-center justify-center"
+            onPress={() => {
+              props.navigation.navigate("Profile");
+            }}
           >
-            <Image source={{uri: "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg"}} className="h-12 w-12 rounded-full"/>
+            <View className="h-12 w-12 rounded-full object-contain resize">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
       <View className="border-[#e7e7e6] border rounded w-11/12 h-5/6 my-5 shadow p-1">
         {/* Header */}
         <View className="w-full flex-row my-4 items-center">
-            {/* Boton retroceder */}
-            <TouchableOpacity className="w-1/5 rounded-lg p-1 justify-center items-center"
-              onPress={() => {props.navigation.goBack();}}
-            >
-              <AntDesign name="arrowleft" size={24} color="#6F47EB" />
-            </TouchableOpacity>
-          <Text className="text-[#343a40] text-2xl font-bold text-center">{taskData.title}</Text>
+          {/* Boton retroceder */}
+          <TouchableOpacity
+            className="w-1/5 rounded-lg p-1 justify-center items-center"
+            onPress={() => {
+              props.navigation.goBack();
+            }}
+          >
+            <AntDesign name="arrowleft" size={24} color="#6F47EB" />
+          </TouchableOpacity>
+          <Text className="text-[#343a40] text-2xl font-bold text-center">
+            {taskData.title}
+          </Text>
         </View>
         <View className="flex-row items-center justify-between px-4 space-x-1 mt-2">
           <View>
-            <Text className="text-[#343a40] text-sm">Asignada: {taskData.startDate.toDate().toDateString()}</Text>
-            <Text className="text-[#343a40] text-sm">Finaliza: {taskData.endDate.toDate().toDateString()}</Text>
+            <Text className="text-[#343a40] text-sm">
+              Asignada: {taskData.startDate.toDate().toDateString()}
+            </Text>
+            <Text className="text-[#343a40] text-sm">
+              Finaliza: {taskData.endDate.toDate().toDateString()}
+            </Text>
           </View>
           <View className="flex-row items-center justify-center">
             <TouchableOpacity
@@ -165,7 +223,9 @@ const Tasks = (props) => {
         {/* description display */}
         <View className="px-4 mt-2">
           <Text className="text-black font-bold">Descripción</Text>
-          <Text className="text-[#343a40] text-base">{taskData.description}</Text>
+          <Text className="text-[#343a40] text-base">
+            {taskData.description}
+          </Text>
         </View>
         {/*
         <View className="px-4">
@@ -173,32 +233,37 @@ const Tasks = (props) => {
         </View>
         */}
         <View className="w-full px-4 mt-6">
-          <TouchableOpacity className="flex-row w-2/3"
-            onPress={handleUpload}
-          >
+          <TouchableOpacity className="flex-row w-2/3" onPress={handleUpload}>
             <MaterialCommunityIcons name="clippy" size={24} color="#6F47EB" />
-            <Text className="text-[#6F47EB] text-base">Adjuntar archivo y entregar</Text>
+            <Text className="text-[#6F47EB] text-base">
+              Adjuntar archivo y entregar
+            </Text>
           </TouchableOpacity>
           <View>
             <View className="flex-row bg-[#e9ecef] mt-2 rounded items-center justify-between">
               <View className="flex-row items-center">
-                <Image source={{uri: "https://blog.ida.cl/wp-content/uploads/sites/5/2020/04/tamano-redes-blog-655x470.png"}} className="h-12 w-12 rounded"/>
+                <Image
+                  source={{
+                    uri: "https://blog.ida.cl/wp-content/uploads/sites/5/2020/04/tamano-redes-blog-655x470.png",
+                  }}
+                  className="h-12 w-12 rounded"
+                />
                 <Text className="w-60 ml-3 font-bold">
                   {file ? file.name : "No file selected"}
                 </Text>
               </View>
-              <TouchableOpacity className=" bg-red-500 h-12 w-12 items-center justify-center rounded"
+              <TouchableOpacity
+                className=" bg-red-500 h-12 w-12 items-center justify-center rounded"
                 onPress={() => setFile(null)}
               >
-                <MaterialCommunityIcons name="trash-can-outline" size={24} color="white" />
+                <MaterialCommunityIcons
+                  name="trash-can-outline"
+                  size={24}
+                  color="white"
+                />
               </TouchableOpacity>
             </View>
-            {uploading ? (
-                <Text>Uploading file...</Text>
-              ) : 
-              (
-                <Text></Text>
-              )}
+            {uploading ? <Text>Uploading file...</Text> : <Text></Text>}
           </View>
         </View>
 
@@ -210,13 +275,17 @@ const Tasks = (props) => {
                   className="bg-black py-2 px-4 mr-4 rounded-md"
                   onPress={updateTaskStatus}
                 >
-                  <Text className="text-white font-bold text-center">Subir y entregar</Text>
+                  <Text className="text-white font-bold text-center">
+                    Subir y entregar
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   className="bg-red-500 py-2 px-4 rounded-md"
                   onPress={() => setModalVisible(false)}
                 >
-                  <Text className="text-white font-bold text-center">Cancelar</Text>
+                  <Text className="text-white font-bold text-center">
+                    Cancelar
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -231,6 +300,6 @@ export default Tasks;
 
 const styles = StyleSheet.create({
   container: {
-      paddingTop: Constants.statusBarHeight,
-  }
+    paddingTop: Constants.statusBarHeight,
+  },
 });

@@ -53,7 +53,9 @@ const HomeAdmins = (props) => {
           <TouchableOpacity className="h-full items-center justify-center"
             onPress={() => {props.navigation.navigate("Profile")}}
           >
-            <FontAwesome name="user-circle-o" size={24} color="white" />
+            <View className="h-12 w-12 rounded-full object-contain resize">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>

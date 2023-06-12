@@ -1,20 +1,30 @@
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import TeamCard from "../components/TeamCard";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import db from "../database/firebase";
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 import { AppContext } from "../AppContext";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 const Teams = (props) => {
-
   const { globalData } = useContext(AppContext);
   const { user } = globalData;
   const [teams, setTeams] = useState([]);
 
   useEffect(() => {
-    const q = query(collection(db, "teams"), where("coordinatorId", "==", user.id.trim()));
+    const q = query(
+      collection(db, "teams"),
+      where("coordinatorId", "==", user.id.trim())
+    );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const teamsData = [];
       querySnapshot.forEach((doc) => {
@@ -35,60 +45,101 @@ const Teams = (props) => {
   return (
     <View className="bg-[#f8f9fa] h-full w-full items-center">
       {/* Navbar */}
-      <View className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow" style={styles.container}>
+      <View
+        className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow"
+        style={styles.container}
+      >
         {/* Logo */}
         <View className="w-1/6 h-full">
           <TouchableOpacity
             className=" flex-1 items-center justify-center"
-            onPress={() => {props.navigation.navigate("Home")}}
+            onPress={() => {
+              props.navigation.navigate("Home");
+            }}
           >
-            <Image source={require('../assets/logoUnivalle.png')} className="h-14" style={{width: '100%', resizeMode:"contain"}}/>
+            <Image
+              source={require("../assets/logoUnivalle.png")}
+              className="h-14"
+              style={{ width: "100%", resizeMode: "contain" }}
+            />
           </TouchableOpacity>
         </View>
         {/* Menu */}
         <View className="w-4/6 h-full flex-row justify-around px-2">
           {/* Inicio */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Home")}
           >
-            <MaterialCommunityIcons name="home-variant-outline" size={24} color="white" />
-            <Text className="text-white text-xs md:text-lg font-bold">Inicio</Text>
+            <MaterialCommunityIcons
+              name="home-variant-outline"
+              size={24}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Inicio
+            </Text>
           </TouchableOpacity>
           {/* Estudiantes */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Users")}
           >
-            <MaterialCommunityIcons name="account-tie-outline" size={28} color="white" />
-            <Text className="text-white text-xs md:text-lg font-bold">Estudiantes</Text>
+            <MaterialCommunityIcons
+              name="account-tie-outline"
+              size={28}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Estudiantes
+            </Text>
           </TouchableOpacity>
           {/* Grupos */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
             onPress={() => props.navigation.navigate("Teams")}
           >
-            <MaterialCommunityIcons name="account-group-outline" size={28} color="white" />
-            <Text className="text-white text-xs md:text-lg font-bold">Grupos</Text>
+            <MaterialCommunityIcons
+              name="account-group-outline"
+              size={28}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Grupos
+            </Text>
           </TouchableOpacity>
           {/* Tareas */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Tasks")}
           >
-            <AntDesign name="book" size={24} color="white"/>
-            <Text className="text-white text-xs md:text-lg font-bold">Tareas</Text>
+            <AntDesign name="book" size={24} color="white" />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Tareas
+            </Text>
           </TouchableOpacity>
           {/* Horas */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Hours")}
           >
-            <AntDesign name="clockcircleo" size={24} color="white"/>
-            <Text className="text-white text-xs md:text-lg font-bold">Horas</Text>
+            <AntDesign name="clockcircleo" size={24} color="white" />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Horas
+            </Text>
           </TouchableOpacity>
         </View>
         {/* Perfil */}
         <View className="w-1/6 h-full">
-          <TouchableOpacity className="h-full items-center justify-center"
-            onPress={() => {props.navigation.navigate("Profile")}}
+          <TouchableOpacity
+            className="h-full items-center justify-center"
+            onPress={() => {
+              props.navigation.navigate("Profile");
+            }}
           >
-            <Image source={{uri: "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg"}} className="h-12 w-12 rounded-full"/>
+            <View className="h-12 w-12 rounded-full object-contain resize">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -97,19 +148,23 @@ const Teams = (props) => {
         {/*Barra superior*/}
         <View className="h-20 flex-row justify-around items-center border-b-2 border-[#e7e7e6]">
           {/*Agregar Grupos*/}
-          <TouchableOpacity className="w-full h-full flex-col md:flex-row items-center justify-center py-3"
+          <TouchableOpacity
+            className="w-full h-full flex-col md:flex-row items-center justify-center py-3"
             onPress={() => props.navigation.navigate("AddTeam")}
           >
-            <View className='w-8 h-8 border-2 border-[#6F47EB] rounded-full justify-center items-center'>
-              <AntDesign name="addusergroup" size={24} color="#6F47EB"/>
+            <View className="w-8 h-8 border-2 border-[#6F47EB] rounded-full justify-center items-center">
+              <AntDesign name="addusergroup" size={24} color="#6F47EB" />
             </View>
             <View className="ml-1">
-              <Text className="text-[#232323] text-base font-bold">Agregar Grupo</Text>
+              <Text className="text-[#232323] text-base font-bold">
+                Agregar Grupo
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
         {/*Lista de grupos*/}
-        <ScrollView className="flex-1 w-full h-full"
+        <ScrollView
+          className="flex-1 w-full h-full"
           showsVerticalScrollIndicator={false}
         >
           {teams.map((team, index) => {
@@ -131,6 +186,6 @@ export default Teams;
 
 const styles = StyleSheet.create({
   container: {
-      paddingTop: Constants.statusBarHeight,
-  }
+    paddingTop: Constants.statusBarHeight,
+  },
 });

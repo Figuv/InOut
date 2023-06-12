@@ -14,6 +14,7 @@ import { AppContext } from "../AppContext";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import TeamCard from "../components/TeamCard";
+import { FontAwesome } from "@expo/vector-icons";
 
 const Hours = (props) => {
   const { globalData } = useContext(AppContext);
@@ -137,12 +138,9 @@ const Hours = (props) => {
               props.navigation.navigate("Profile");
             }}
           >
-            <Image
-              source={{
-                uri: "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg",
-              }}
-              className="h-12 w-12 rounded-full"
-            />
+            <View className="h-12 w-12 rounded-full">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>

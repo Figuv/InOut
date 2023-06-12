@@ -1,12 +1,29 @@
-import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, StyleSheet, Image, } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  StyleSheet,
+  Image,
+} from "react-native";
 import React, { useEffect, useState } from "react";
-import { collection, query, where, onSnapshot, deleteDoc, doc, updateDoc, } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import db from "../database/firebase";
 import DropDownPicker from "react-native-dropdown-picker";
 import UserCard from "./UserCard";
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import TaskCard from "../components/TaskCard";
+import { FontAwesome } from "@expo/vector-icons";
 
 const TeamModal = (props) => {
   const { teamData } = props.route.params;
@@ -22,7 +39,11 @@ const TeamModal = (props) => {
   //Obtiene usuarios y tareas del equipo
   useEffect(() => {
     const q = query(collection(db, "users"), where("teamId", "==", ""));
-    const t = query(collection(db, "tasks"), where("teamId", "==", id.trim()), where("state", "==", 1));
+    const t = query(
+      collection(db, "tasks"),
+      where("teamId", "==", id.trim()),
+      where("state", "==", 1)
+    );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const users = [];
       querySnapshot.forEach((doc) => {
@@ -118,60 +139,101 @@ const TeamModal = (props) => {
   return (
     <View className="bg-[#f8f9fa] h-full w-full items-center">
       {/* Navbar */}
-      <View className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow" style={styles.container}>
+      <View
+        className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow"
+        style={styles.container}
+      >
         {/* Logo */}
         <View className="w-1/6 h-full">
           <TouchableOpacity
             className=" flex-1 items-center justify-center"
-            onPress={() => {props.navigation.navigate("Home")}}
+            onPress={() => {
+              props.navigation.navigate("Home");
+            }}
           >
-            <Image source={require('../assets/logoUnivalle.png')} className="h-14" style={{width: '100%', resizeMode:"contain"}}/>
+            <Image
+              source={require("../assets/logoUnivalle.png")}
+              className="h-14"
+              style={{ width: "100%", resizeMode: "contain" }}
+            />
           </TouchableOpacity>
         </View>
         {/* Menu */}
         <View className="w-4/6 h-full flex-row justify-around px-2">
           {/* Inicio */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Home")}
           >
-            <MaterialCommunityIcons name="home-variant-outline" size={24} color="white" />
-            <Text className="text-white text-xs md:text-lg font-bold">Inicio</Text>
+            <MaterialCommunityIcons
+              name="home-variant-outline"
+              size={24}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Inicio
+            </Text>
           </TouchableOpacity>
           {/* Estudiantes */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Users")}
           >
-            <MaterialCommunityIcons name="account-tie-outline" size={28} color="white" />
-            <Text className="text-white text-xs md:text-lg font-bold">Estudiantes</Text>
+            <MaterialCommunityIcons
+              name="account-tie-outline"
+              size={28}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Estudiantes
+            </Text>
           </TouchableOpacity>
           {/* Grupos */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center border-b-4 border-white "
             onPress={() => props.navigation.navigate("Teams")}
           >
-            <MaterialCommunityIcons name="account-group-outline" size={28} color="white" />
-            <Text className="text-white text-xs md:text-lg font-bold">Grupos</Text>
+            <MaterialCommunityIcons
+              name="account-group-outline"
+              size={28}
+              color="white"
+            />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Grupos
+            </Text>
           </TouchableOpacity>
           {/* Tareas */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Tasks")}
           >
-            <AntDesign name="book" size={24} color="white"/>
-            <Text className="text-white text-xs md:text-lg font-bold">Tareas</Text>
+            <AntDesign name="book" size={24} color="white" />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Tareas
+            </Text>
           </TouchableOpacity>
           {/* Horas */}
-          <TouchableOpacity className="w-1/5 h-full text-center justify-center items-center"
+          <TouchableOpacity
+            className="w-1/5 h-full text-center justify-center items-center"
             onPress={() => props.navigation.navigate("Hours")}
           >
-            <AntDesign name="clockcircleo" size={24} color="white"/>
-            <Text className="text-white text-xs md:text-lg font-bold">Horas</Text>
+            <AntDesign name="clockcircleo" size={24} color="white" />
+            <Text className="text-white text-xs md:text-lg font-bold">
+              Horas
+            </Text>
           </TouchableOpacity>
         </View>
         {/* Perfil */}
         <View className="w-1/6 h-full">
-          <TouchableOpacity className="h-full items-center justify-center"
-            onPress={() => {props.navigation.navigate("Profile")}}
+          <TouchableOpacity
+            className="h-full items-center justify-center"
+            onPress={() => {
+              props.navigation.navigate("Profile");
+            }}
           >
-            <Image source={{uri: "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg"}} className="h-12 w-12 rounded-full"/>
+            <View className="h-12 w-12 rounded-full object-contain resize">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -179,7 +241,9 @@ const TeamModal = (props) => {
         {/*Barra superior*/}
         <View className="h-20 flex-row justify-around items-center border-b-2 border-[#e7e7e6] mb-1">
           {/*Nombre del Grupos*/}
-          <Text className="text-black text-2xl font-bold">{teamData.teamName}</Text>
+          <Text className="text-black text-2xl font-bold">
+            {teamData.teamName}
+          </Text>
         </View>
         {/*Contenido*/}
         <View className="w-full h-5/6">
@@ -187,7 +251,9 @@ const TeamModal = (props) => {
           <View className="w-full h-4/6 items-center lg:flex-row">
             <View className="w-full lg:w-1/2 h-1/2 lg:h-5/6 border-[#e7e7e6] border rounded">
               <ScrollView className="w-full">
-                <Text className="text-black text-lg text-center font-bold">Miembros</Text>
+                <Text className="text-black text-lg text-center font-bold">
+                  Miembros
+                </Text>
                 {users.map((member, index) => (
                   <UserCard
                     key={index}
@@ -201,21 +267,24 @@ const TeamModal = (props) => {
             </View>
             <View className="w-full lg:w-1/2 h-1/2 lg:h-5/6 border-[#e7e7e6] border rounded">
               <ScrollView>
-                <Text className="text-black text-lg text-center font-bold">Tareas</Text>
+                <Text className="text-black text-lg text-center font-bold">
+                  Tareas
+                </Text>
                 {tasks.map((task, index) => (
-                  <TaskCard 
-                    key={index} 
-                    task={task} 
+                  <TaskCard
+                    key={index}
+                    task={task}
                     onPress={() => showTaskModal(task)}
                   />
-                ))
-              }
+                ))}
               </ScrollView>
             </View>
-        </View>
-        <View className="w-full h-2/6 justify-around items-center">
-          <View className="w-full h-1/2 justify-center items-center px-2">
-              <Text className=" text-black font-bold text-lg">Agregar miembros</Text>
+          </View>
+          <View className="w-full h-2/6 justify-around items-center">
+            <View className="w-full h-1/2 justify-center items-center px-2">
+              <Text className=" text-black font-bold text-lg">
+                Agregar miembros
+              </Text>
               <DropDownPicker
                 items={addUsers.map((user) => ({
                   label: user.name,
@@ -246,7 +315,9 @@ const TeamModal = (props) => {
                 onPress={() => addToTeam()}
                 className="bg-[#6F47EB] w-1/3 rounded-2xl h-12 justify-center items-center shadow-lg"
               >
-                <Text className="text-white text-sm lg:text-lg font-bold text-center">Aceptar Usuario</Text>
+                <Text className="text-white text-sm lg:text-lg font-bold text-center">
+                  Aceptar Usuario
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -254,13 +325,17 @@ const TeamModal = (props) => {
                 }}
                 className="bg-white w-1/3 rounded-2xl h-12 justify-center items-center shadow-lg border-[#6F47EB] border-2"
               >
-                <Text className="text-[#6F47EB] text-sm lg:text-lg font-bold text-center">Editar Equipo</Text>
+                <Text className="text-[#6F47EB] text-sm lg:text-lg font-bold text-center">
+                  Editar Equipo
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => deleteTeam()}
                 className="bg-[#EC2008] w-1/3 rounded-2xl h-12 justify-center items-center shadow-lg"
               >
-                <Text className="text-white text-sm lg:text-lg font-bold text-center">Eliminar Equipo</Text>
+                <Text className="text-white text-sm lg:text-lg font-bold text-center">
+                  Eliminar Equipo
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -274,6 +349,6 @@ export default TeamModal;
 
 const styles = StyleSheet.create({
   container: {
-      paddingTop: Constants.statusBarHeight,
-  }
+    paddingTop: Constants.statusBarHeight,
+  },
 });

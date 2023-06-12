@@ -1,21 +1,42 @@
-import { View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, ScrollView } from "react-native";
-import { collection, query, where, getDocs, doc, updateDoc, onSnapshot, } from "firebase/firestore";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
 import db from "../database/firebase";
 import React, { useContext, useEffect, useState } from "react";
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 import TaskCard from "../components/TaskCard";
 import { AppContext } from "../AppContext";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 const HomeUsers = (props) => {
   const { globalData } = useContext(AppContext);
   const { user } = globalData;
   const [tasks, setTasks] = useState([]);
-  const [tasksCount, setTasksCount] = useState('');
-  const {teamId} = user;
+  const [tasksCount, setTasksCount] = useState("");
+  const { teamId } = user;
 
   useEffect(() => {
-    const q = query(collection(db, "tasks"), where("teamId", "==", teamId.trim()), where("state", "==", 1));
+    const q = query(
+      collection(db, "tasks"),
+      where("teamId", "==", teamId.trim()),
+      where("state", "==", 1)
+    );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const tasksData = [];
       querySnapshot.forEach((doc) => {
@@ -34,10 +55,14 @@ const HomeUsers = (props) => {
   };
 
   const countTask = async () => {
-    const q = query(collection(db, "tasks"), where("teamId", "==", teamId.trim()), where("state", "==", 1));
+    const q = query(
+      collection(db, "tasks"),
+      where("teamId", "==", teamId.trim()),
+      where("state", "==", 1)
+    );
     const querySnapshot = await getDocs(q);
     setTasksCount(querySnapshot.size);
-  }
+  };
 
   const logOut = async () => {
     const q = query(collection(db, "session"), where("userId", "==", user.id));
@@ -73,32 +98,56 @@ const HomeUsers = (props) => {
   return (
     <View className="bg-[#fff] h-full w-full items-center">
       {/*Navbar*/}
-      <View className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow" style={styles.container}>
+      <View
+        className="bg-[#6F47EB] w-full h-24 items-center justify-around flex-row px-2 shadow"
+        style={styles.container}
+      >
         <View className="w-1/4 h-full">
           <TouchableOpacity
             className=" flex-1 items-center justify-center"
-            onPress={() => {props.navigation.navigate("HomeUsers")}}
+            onPress={() => {
+              props.navigation.navigate("HomeUsers");
+            }}
           >
-            <Image source={require('../assets/logoUnivalle.png')} className="h-14" style={{width: '100%', resizeMode:"contain"}}/>
+            <Image
+              source={require("../assets/logoUnivalle.png")}
+              className="h-14"
+              style={{ width: "100%", resizeMode: "contain" }}
+            />
           </TouchableOpacity>
         </View>
         <View className="w-2/4 h-full flex-row justify-around">
-          <TouchableOpacity className="w-1/2 h-full justify-center border-b-4 border-white"
-            onPress={() => {props.navigation.navigate("HomeUsers")}}
+          <TouchableOpacity
+            className="w-1/2 h-full justify-center border-b-4 border-white"
+            onPress={() => {
+              props.navigation.navigate("HomeUsers");
+            }}
           >
-            <Text className="text-white text-sm lg:text-lg font-bold text-center">Inicio</Text>
+            <Text className="text-white text-sm lg:text-lg font-bold text-center">
+              Inicio
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity className="w-1/2 h-full justify-center"
-            onPress={() => {props.navigation.navigate("TasksUsers")}}
+          <TouchableOpacity
+            className="w-1/2 h-full justify-center"
+            onPress={() => {
+              props.navigation.navigate("TasksUsers");
+            }}
           >
-            <Text className="text-white text-sm lg:text-lg font-bold text-center">Tareas</Text>
+            <Text className="text-white text-sm lg:text-lg font-bold text-center">
+              Tareas
+            </Text>
           </TouchableOpacity>
         </View>
         <View className="w-1/4 h-full">
-          <TouchableOpacity className="h-full items-center justify-center"
-            onPress={() => {props.navigation.navigate("Profile")}}
+          <TouchableOpacity
+            className="h-full items-center justify-center"
+            onPress={() => {
+              props.navigation.navigate("Profile");
+            }}
           >
-            <Image source={{uri: "https://www.dmarge.com/wp-content/uploads/2021/01/dwayne-the-rock-.jpg"}} className="h-12 w-12 rounded-full"/>
+            <View className="h-12 w-12 rounded-full object-contain resize">
+              <FontAwesome name="user-circle-o" size={48} color="#FFF" />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -107,22 +156,27 @@ const HomeUsers = (props) => {
         <View className="flex-row justify-between items-center border-b-2 border-[#e7e7e6] py-3">
           {/*Tareas pendientes*/}
           <View className="w-1/2 flex-row items-center justify-center">
-            <View className='w-12 h-12 border-2 border-[#6F47EB] rounded-full justify-center items-center'>
-
+            <View className="w-12 h-12 border-2 border-[#6F47EB] rounded-full justify-center items-center">
               <AntDesign name="book" size={30} color="#6F47EB" />
             </View>
             <View className="ml-1">
-              <Text className="text-[#9e9e9e] text-xs font-bold">Tareas pendientes</Text>
-              <Text className="text-[#232323] text-lg font-bold">{tasksCount}</Text>
+              <Text className="text-[#9e9e9e] text-xs font-bold">
+                Tareas pendientes
+              </Text>
+              <Text className="text-[#232323] text-lg font-bold">
+                {tasksCount}
+              </Text>
             </View>
           </View>
           {/*Horas*/}
           <View className="w-1/2 flex-row items-center justify-center border-l-2 border-[#e7e7e6]">
-            <View className='w-12 h-12 border-2 border-[#6F47EB] rounded-full items-center justify-center'>
-              <AntDesign name="clockcircleo" size={32} color="#6F47EB"/>
+            <View className="w-12 h-12 border-2 border-[#6F47EB] rounded-full items-center justify-center">
+              <AntDesign name="clockcircleo" size={32} color="#6F47EB" />
             </View>
             <View className="ml-1">
-              <Text className="text-[#9e9e9e] text-xs font-bold">Tiempo total</Text>
+              <Text className="text-[#9e9e9e] text-xs font-bold">
+                Tiempo total
+              </Text>
               <Text className="text-[#232323] text-lg font-bold">00:00:00</Text>
             </View>
           </View>
@@ -151,6 +205,6 @@ export default HomeUsers;
 
 const styles = StyleSheet.create({
   container: {
-      paddingTop: Constants.statusBarHeight,
-  }
+    paddingTop: Constants.statusBarHeight,
+  },
 });
