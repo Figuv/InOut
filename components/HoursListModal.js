@@ -20,7 +20,7 @@ import db from "../database/firebase";
 import DropDownPicker from "react-native-dropdown-picker";
 import UserCard from "./UserCard";
 import Constants from "expo-constants";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons, AntDesign, FontAwesome } from "@expo/vector-icons";
 import HourCard from "./HourCard";
 const HoursListModal = (props) => {
   const { user } = props.route.params;

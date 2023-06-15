@@ -28,13 +28,13 @@ export default function HourCard(props) {
           <View className="flex-row w-full justify-between">
             <View className="flex-row mb-2">
               <Text className="text-sm text-gray-500">
-                Login hour: {session.loginTime}
+                Login hour: {session.loginTime} |
               </Text>
               <Text className="text-sm text-gray-500">
-                Logout hour: {session.logoutTime}
+                Logout hour: {session.logoutTime} |
               </Text>
               <Text className="text-sm text-gray-500">
-                Total hours: {session.hours}
+                Total hours: {session.hours} |
               </Text>
             </View>
             <TouchableOpacity

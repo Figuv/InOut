@@ -30,6 +30,7 @@ const HomeUsers = (props) => {
   const [tasks, setTasks] = useState([]);
   const [tasksCount, setTasksCount] = useState("");
   const { teamId } = user;
+  const [totalTime, setTotalTime] = useState("00:00:00");
 
   useEffect(() => {
     const q = query(
@@ -48,6 +49,12 @@ const HomeUsers = (props) => {
       countTask();
     });
     return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    getTotalTime().then((formattedTotalTime) => {
+      setTotalTime(formattedTotalTime);
+    });
   }, []);
 
   const showModal = (taskData) => {
@@ -93,6 +100,32 @@ const HomeUsers = (props) => {
       logoutTime: new Date().toLocaleTimeString(),
       hours: hours + ":" + minutes + ":" + seconds,
     });
+  };
+
+  const getTotalTime = async () => {
+    const q = query(collection(db, "session"), where("userId", "==", user.id));
+    const querySnapshot = await getDocs(q);
+    let totalHours = 0;
+    querySnapshot.forEach((doc) => {
+      const session = doc.data();
+      totalHours += session.hours ? convertToSeconds(session.hours) : 0;
+    });
+    const formattedTotalTime = convertToTime(totalHours);
+    return formattedTotalTime;
+  };
+
+  const convertToSeconds = (timeString) => {
+    const [hours, minutes, seconds] = timeString.split(":");
+    return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
+  };
+
+  const convertToTime = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -177,7 +210,7 @@ const HomeUsers = (props) => {
               <Text className="text-[#9e9e9e] text-xs font-bold">
                 Tiempo total
               </Text>
-              <Text className="text-[#232323] text-lg font-bold">00:00:00</Text>
+              <Text className="text-[#232323] text-lg font-bold">{totalTime}</Text>
             </View>
           </View>
         </View>
