@@ -1,24 +1,54 @@
-import { View, Text, Image, Modal, StyleSheet, TouchableOpacity, } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
-import Constants from 'expo-constants';
-import React, { useEffect, useState, useContext, } from "react";
-import { collection, query, onSnapshot, updateDoc, doc, where, getDocs, } from "firebase/firestore"; // Importa la función updateDoc para actualizar la tarea en Firestore
+import {
+  View,
+  Text,
+  Image,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import Constants from "expo-constants";
+import React, { useEffect, useState, useContext } from "react";
+import {
+  collection,
+  query,
+  onSnapshot,
+  updateDoc,
+  doc,
+  where,
+  getDocs,
+} from "firebase/firestore"; // Importa la función updateDoc para actualizar la tarea en Firestore
 import { AppContext } from "../AppContext";
 import db from "../database/firebase";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from "@expo/vector-icons";
 
 const Profile = (props) => {
   const { globalData } = useContext(AppContext);
   const { user } = globalData;
 
+  const today = new Date();
+  const logDate = today
+    .toLocaleString("en", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })
+    .replace(/,/g, "");
+
+  console.log(logDate);
+
   // Función para cerrar sesión
   const logOut = async () => {
     console.log(user);
-    if(user.role === "Administrador" || user.role === "Coordinador"){
+    if (user.role === "Administrador" || user.role === "Coordinador") {
       props.navigation.navigate("Login");
-    }
-    else{
-      const q = query(collection(db, "session"), where("userId", "==", user.id));
+    } else {
+      const q = query(
+        collection(db, "session"),
+        where("userId", "==", user.id),
+        where("logDate", "==", logDate)
+      );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach(async (doc) => {
         const session = doc.data();
@@ -49,14 +79,20 @@ const Profile = (props) => {
       hours: hours + ":" + minutes + ":" + seconds,
     });
   };
-  
+
   return (
-    <View className="bg-[#6F47EB] w-full h-full justify-evenly" style={styles.container}>
+    <View
+      className="bg-[#6F47EB] w-full h-full justify-evenly"
+      style={styles.container}
+    >
       {/* Boton volver atras*/}
-      <TouchableOpacity className="bg-white w-12 h-10 mx-5 items-center justify-center rounded"
-        onPress={() => {props.navigation.goBack()}}
+      <TouchableOpacity
+        className="bg-white w-12 h-10 mx-5 items-center justify-center rounded"
+        onPress={() => {
+          props.navigation.goBack();
+        }}
       >
-        <AntDesign name="arrowleft" size={24} color="#6F47EB"/>
+        <AntDesign name="arrowleft" size={24} color="#6F47EB" />
       </TouchableOpacity>
       {/* Contenedor del contenido*/}
       <View className="w-full h-5/6 p-5">
@@ -64,7 +100,7 @@ const Profile = (props) => {
         <View className="bg-white h-full rounded p-5">
           <View className="w-full h-4/5 items-center">
             <View className="h-40 w-40 rounded-full shadow justify-center items-center">
-              <FontAwesome name="user-circle-o" size={140} color="#6F47EB"/>
+              <FontAwesome name="user-circle-o" size={140} color="#6F47EB" />
             </View>
             <View className="flex-row py-2">
               <Text className="text-black font-bold text-base">Rol: </Text>
@@ -81,23 +117,25 @@ const Profile = (props) => {
           </View>
           {/* Contenedor de los botones*/}
           <View className="w-full h-1/5 items-center justify-end space-y-2">
-            <TouchableOpacity
-              onPress={logOut}
-            >
-              <Text className="bg-[#d62828] text-white font-bold text-lg p-2 rounded">Cerrar sesión</Text>
+            <TouchableOpacity onPress={logOut}>
+              <Text className="bg-[#d62828] text-white font-bold text-lg p-2 rounded">
+                Cerrar sesión
+              </Text>
             </TouchableOpacity>
-            <Text className="text-black text-sm">© Univalle 2022 - 3 Minutos con la biblia</Text>
+            <Text className="text-black text-sm">
+              © Univalle 2022 - 3 Minutos con la biblia
+            </Text>
           </View>
         </View>
       </View>
     </View>
   );
 };
-  
-export default Profile;  
+
+export default Profile;
 
 const styles = StyleSheet.create({
   container: {
     paddingTop: Constants.statusBarHeight,
-  }
+  },
 });
